@@ -2,8 +2,14 @@
 	import '../app.css';
 	import '$lib/i18n';
 	import { isLoading } from 'svelte-i18n';
+	import { onMount } from 'svelte';
+	import { checkSession } from '$lib/utils/auth';
 
 	let { children } = $props();
+
+	onMount(() => {
+		checkSession();
+	});
 </script>
 
 <svelte:head>

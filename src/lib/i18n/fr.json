@@ -13,7 +13,10 @@
 		"progress": "Ma progression",
 		"shop": "Boutique",
 		"settings": "Paramètres",
-		"leaderboard": "Classement"
+		"leaderboard": "Classement",
+		"welcome": "Bienvenue, {username} !",
+		"level": "Niveau {level}",
+		"xp": "Expérience"
 	},
 	"game": {
 		"validate": "Valider",
@@ -30,7 +33,29 @@
 		"enterCode": "Entre le code de ta classe",
 		"enterPin": "Entre ton code secret",
 		"chooseAvatar": "Choisis ton avatar",
-		"chooseUsername": "Choisis ton pseudo"
+		"chooseUsername": "Choisis ton pseudo",
+		"joinTitle": "Comment veux-tu jouer ?",
+		"joinSubtitle": "Choisis ton mode de jeu",
+		"playSolo": "Je joue seul",
+		"haveCode": "J'ai un code classe",
+		"chooseGrade": "Quel est ton niveau ?",
+		"gradeSubtitle": "Choisis ta classe pour adapter les exercices",
+		"gradeCpDesc": "Nombres jusqu'à 100, additions, soustractions",
+		"gradeCe1Desc": "Nombres jusqu'à 1000, multiplications",
+		"usernameHint": "Choisis un pseudo pour ton profil",
+		"usernamePlaceholder": "Ton pseudo...",
+		"usernameTooShort": "Le pseudo doit faire au moins 2 caractères",
+		"usernameTooLong": "Le pseudo ne doit pas dépasser 15 caractères",
+		"usernameInvalidChars": "Le pseudo ne peut contenir que des lettres et des chiffres",
+		"usernameProfanity": "Ce pseudo n'est pas autorisé",
+		"createPin": "Code secret (optionnel)",
+		"pinHint": "Crée un code à 4 chiffres pour protéger ton compte",
+		"skipPin": "Passer cette étape",
+		"letsGo": "C'est parti !"
+	},
+	"settings": {
+		"changeAvatar": "Changer d'avatar",
+		"switchPlayer": "Changer de joueur"
 	},
 	"common": {
 		"loading": "Chargement...",

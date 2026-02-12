@@ -7,6 +7,21 @@ export default ts.config(
 	...ts.configs.recommended,
 	...svelte.configs.recommended,
 	{
+		languageOptions: {
+			globals: {
+				sessionStorage: 'readonly',
+				localStorage: 'readonly',
+				window: 'readonly',
+				document: 'readonly',
+				crypto: 'readonly',
+				MouseEvent: 'readonly',
+				Event: 'readonly',
+				KeyboardEvent: 'readonly',
+				HTMLInputElement: 'readonly'
+			}
+		}
+	},
+	{
 		files: ['**/*.svelte', '**/*.svelte.ts', '**/*.svelte.js'],
 		languageOptions: {
 			parserOptions: {

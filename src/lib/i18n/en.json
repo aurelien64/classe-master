@@ -13,7 +13,10 @@
 		"progress": "My progress",
 		"shop": "Shop",
 		"settings": "Settings",
-		"leaderboard": "Leaderboard"
+		"leaderboard": "Leaderboard",
+		"welcome": "Welcome, {username}!",
+		"level": "Level {level}",
+		"xp": "Experience"
 	},
 	"game": {
 		"validate": "Validate",
@@ -30,7 +33,29 @@
 		"enterCode": "Enter your class code",
 		"enterPin": "Enter your secret code",
 		"chooseAvatar": "Choose your avatar",
-		"chooseUsername": "Choose your username"
+		"chooseUsername": "Choose your username",
+		"joinTitle": "How do you want to play?",
+		"joinSubtitle": "Choose your game mode",
+		"playSolo": "I play solo",
+		"haveCode": "I have a class code",
+		"chooseGrade": "What's your level?",
+		"gradeSubtitle": "Choose your grade to adapt exercises",
+		"gradeCpDesc": "Numbers up to 100, additions, subtractions",
+		"gradeCe1Desc": "Numbers up to 1000, multiplications",
+		"usernameHint": "Choose a username for your profile",
+		"usernamePlaceholder": "Your username...",
+		"usernameTooShort": "Username must be at least 2 characters",
+		"usernameTooLong": "Username must not exceed 15 characters",
+		"usernameInvalidChars": "Username can only contain letters and numbers",
+		"usernameProfanity": "This username is not allowed",
+		"createPin": "Secret code (optional)",
+		"pinHint": "Create a 4-digit code to protect your account",
+		"skipPin": "Skip this step",
+		"letsGo": "Let's go!"
+	},
+	"settings": {
+		"changeAvatar": "Change avatar",
+		"switchPlayer": "Switch player"
 	},
 	"common": {
 		"loading": "Loading...",

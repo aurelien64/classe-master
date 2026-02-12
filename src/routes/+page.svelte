@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { _ } from 'svelte-i18n';
+	import Button from '$lib/components/Button.svelte';
 </script>
 
 <svelte:head>
@@ -23,18 +24,8 @@
 
 		<!-- Actions -->
 		<div class="flex w-full max-w-xs flex-col gap-4">
-			<a
-				href="/play"
-				class="flex min-h-[--size-touch-primary] items-center justify-center rounded-[--radius-md] bg-primary text-xl font-bold text-white shadow-md transition-transform active:scale-95"
-			>
-				{$_('welcome.play')}
-			</a>
-			<a
-				href="/join"
-				class="flex min-h-[--size-touch-min] items-center justify-center rounded-[--radius-md] border-2 border-primary text-lg font-semibold text-primary transition-transform active:scale-95"
-			>
-				{$_('welcome.join')}
-			</a>
+			<Button href="/join">{$_('welcome.play')}</Button>
+			<Button variant="secondary" disabled>{$_('welcome.join')}</Button>
 		</div>
 	</div>
 </main>
