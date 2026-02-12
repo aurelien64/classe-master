@@ -33,7 +33,13 @@
 		"accuracy": "Accuracy",
 		"coins": "Coins",
 		"playAgain": "Play again",
-		"hint": "Hint"
+		"hint": "Hint",
+		"breakReminder": "You've been playing for a while! Take a short break."
+	},
+	"streak": {
+		"count": "{count} days in a row!",
+		"day": "Day {count}",
+		"dailyReward": "Daily reward!"
 	},
 	"auth": {
 		"enterCode": "Enter your class code",

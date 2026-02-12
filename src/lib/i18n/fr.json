@@ -33,7 +33,13 @@
 		"accuracy": "Précision",
 		"coins": "Pièces",
 		"playAgain": "Rejouer",
-		"hint": "Indice"
+		"hint": "Indice",
+		"breakReminder": "Tu joues depuis un moment ! Fais une petite pause."
+	},
+	"streak": {
+		"count": "{count} jours de suite !",
+		"day": "Jour {count}",
+		"dailyReward": "Récompense du jour !"
 	},
 	"auth": {
 		"enterCode": "Entre le code de ta classe",

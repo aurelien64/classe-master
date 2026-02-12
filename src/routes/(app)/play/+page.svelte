@@ -10,9 +10,11 @@
 	import ResultsScreen from '$lib/components/ResultsScreen.svelte';
 
 	const SESSION_DURATION = 5 * 60 * 1000;
+	const BREAK_AFTER_SESSIONS = 3;
 	let questionStartTime = $state(0);
 	let timerInterval: ReturnType<typeof setInterval> | undefined;
 	let answerDisabled = $state(false);
+	let sessionCount = $state(0);
 
 	onMount(() => {
 		const player = playerStore.player;
@@ -60,6 +62,7 @@
 	}
 
 	function handlePlayAgain() {
+		sessionCount++;
 		gameStore.reset();
 		const grade = playerStore.player?.grade ?? 'cp';
 		const subLevel = gameStore.getSubLevelForTopic('addition');
@@ -86,6 +89,7 @@
 	const results = $derived(gameStore.getResults());
 	const isFinished = $derived(gameStore.session?.isFinished ?? false);
 	const canShowHint = $derived(gameStore.hintsRevealed < gameStore.currentHints.length);
+	const showBreakReminder = $derived(sessionCount > 0 && sessionCount % BREAK_AFTER_SESSIONS === 0);
 </script>
 
 <svelte:head>
@@ -100,6 +104,8 @@
 		accuracy={results.accuracy}
 		xpEarned={results.xpEarned}
 		coinsEarned={results.coinsEarned}
+		advancements={results.advancements}
+		{showBreakReminder}
 		onPlayAgain={handlePlayAgain}
 		onBackToMenu={handleBackToMenu}
 	/>
