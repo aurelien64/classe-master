@@ -79,6 +79,11 @@
 		"changeAvatar": "Change avatar",
 		"switchPlayer": "Switch player"
 	},
+	"error": {
+		"unknown": "An unexpected error occurred.",
+		"backHome": "Back to home",
+		"offline": "No internet connection. You can still play!"
+	},
 	"common": {
 		"loading": "Loading...",
 		"error": "Oops, something went wrong",

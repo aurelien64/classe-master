@@ -79,6 +79,11 @@
 		"changeAvatar": "Changer d'avatar",
 		"switchPlayer": "Changer de joueur"
 	},
+	"error": {
+		"unknown": "Une erreur inattendue s'est produite.",
+		"backHome": "Retour à l'accueil",
+		"offline": "Pas de connexion internet. Tu peux quand même jouer !"
+	},
 	"common": {
 		"loading": "Chargement...",
 		"error": "Oups, une erreur est survenue",
