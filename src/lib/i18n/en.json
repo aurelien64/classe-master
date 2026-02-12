@@ -27,7 +27,12 @@
 		"incorrect": "Try again!",
 		"timeUp": "Time's up!",
 		"xpEarned": "{xp} XP earned!",
-		"gemsEarned": "{gems} gems earned!"
+		"gemsEarned": "{gems} gems earned!",
+		"results": "Results",
+		"correctCount": "Correct answers",
+		"accuracy": "Accuracy",
+		"coins": "Coins",
+		"playAgain": "Play again"
 	},
 	"auth": {
 		"enterCode": "Enter your class code",

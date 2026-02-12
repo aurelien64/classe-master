@@ -27,7 +27,12 @@
 		"incorrect": "Essaie encore !",
 		"timeUp": "Temps écoulé !",
 		"xpEarned": "{xp} XP gagnés !",
-		"gemsEarned": "{gems} gemmes gagnées !"
+		"gemsEarned": "{gems} gemmes gagnées !",
+		"results": "Résultats",
+		"correctCount": "Bonnes réponses",
+		"accuracy": "Précision",
+		"coins": "Pièces",
+		"playAgain": "Rejouer"
 	},
 	"auth": {
 		"enterCode": "Entre le code de ta classe",

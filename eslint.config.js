@@ -17,7 +17,12 @@ export default ts.config(
 				MouseEvent: 'readonly',
 				Event: 'readonly',
 				KeyboardEvent: 'readonly',
-				HTMLInputElement: 'readonly'
+				HTMLInputElement: 'readonly',
+				setTimeout: 'readonly',
+				clearTimeout: 'readonly',
+				setInterval: 'readonly',
+				clearInterval: 'readonly',
+				Date: 'readonly'
 			}
 		}
 	},
