@@ -59,6 +59,16 @@
 		"skipPin": "Passer cette étape",
 		"letsGo": "C'est parti !"
 	},
+	"progress": {
+		"stats": "Statistiques",
+		"addition": "Addition",
+		"subtraction": "Soustraction",
+		"multiplication": "Multiplication",
+		"counting": "Comptage",
+		"ordering": "Comparaison",
+		"levelUp": "Niveau supérieur !",
+		"topicAdvanced": "{topic} : niveau {level} atteint !"
+	},
 	"settings": {
 		"changeAvatar": "Changer d'avatar",
 		"switchPlayer": "Changer de joueur"

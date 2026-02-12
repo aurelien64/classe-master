@@ -64,6 +64,9 @@ function getStrategyDistractors(
 			if (operands.operation === 'subtraction') {
 				return [operands.a + operands.b];
 			}
+			if (operands.operation === 'multiplication') {
+				return [operands.a + operands.b, Math.abs(operands.a - operands.b)];
+			}
 			return [correct + 2];
 
 		case 'forget_carry': {

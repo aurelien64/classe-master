@@ -442,26 +442,155 @@ const cpOrdering: TemplateConfig[] = [
 	}
 ];
 
+/**
+ * CE1 Addition templates by sub-level.
+ * SL1-2: Review CP, mental strategies
+ * SL3: Addition with carrying (2-digit + 2-digit)
+ * SL4: Addition with carrying (3-digit + 3-digit)
+ */
+const ce1Addition: TemplateConfig[] = [
+	{
+		topic: 'addition',
+		grade: 'ce1',
+		subLevel: 1,
+		operandA: { min: 1, max: 20 },
+		operandB: { min: 1, max: 10 },
+		resultRange: { min: 2, max: 30 },
+		distractorStrategies: ['off_by_one', 'wrong_operation', 'random_nearby'],
+		questionTypes: ['multiple_choice', 'fill_blank', 'free_input'],
+		questionTypeWeights: [50, 30, 20]
+	},
+	{
+		topic: 'addition',
+		grade: 'ce1',
+		subLevel: 2,
+		operandA: { min: 10, max: 50 },
+		operandB: { min: 10, max: 49 },
+		resultRange: { min: 20, max: 99 },
+		distractorStrategies: ['off_by_one', 'forget_carry', 'random_nearby'],
+		questionTypes: ['multiple_choice', 'fill_blank', 'free_input'],
+		questionTypeWeights: [40, 30, 30]
+	},
+	{
+		topic: 'addition',
+		grade: 'ce1',
+		subLevel: 3,
+		operandA: { min: 10, max: 99 },
+		operandB: { min: 10, max: 99 },
+		resultRange: { min: 20, max: 199 },
+		distractorStrategies: ['forget_carry', 'off_by_one', 'digit_swap'],
+		questionTypes: ['fill_blank', 'free_input', 'multiple_choice'],
+		questionTypeWeights: [35, 35, 30]
+	},
+	{
+		topic: 'addition',
+		grade: 'ce1',
+		subLevel: 4,
+		operandA: { min: 100, max: 499 },
+		operandB: { min: 100, max: 499 },
+		resultRange: { min: 200, max: 999 },
+		distractorStrategies: ['forget_carry', 'off_by_one', 'digit_swap'],
+		questionTypes: ['fill_blank', 'free_input'],
+		questionTypeWeights: [40, 60]
+	}
+];
+
+/**
+ * CE1 Subtraction templates by sub-level.
+ * SL3: Subtraction review (2-digit - 1-digit, no borrowing)
+ * SL4: Subtraction with borrowing (2-digit - 2-digit)
+ */
+const ce1Subtraction: TemplateConfig[] = [
+	{
+		topic: 'subtraction',
+		grade: 'ce1',
+		subLevel: 3,
+		operandA: { min: 20, max: 99 },
+		operandB: { min: 1, max: 9 },
+		resultRange: { min: 11, max: 98 },
+		distractorStrategies: ['off_by_one', 'wrong_operation', 'random_nearby'],
+		questionTypes: ['multiple_choice', 'fill_blank', 'free_input'],
+		questionTypeWeights: [40, 30, 30]
+	},
+	{
+		topic: 'subtraction',
+		grade: 'ce1',
+		subLevel: 4,
+		operandA: { min: 20, max: 199 },
+		operandB: { min: 10, max: 99 },
+		resultRange: { min: 1, max: 189 },
+		distractorStrategies: ['forget_borrow', 'off_by_one', 'digit_swap'],
+		questionTypes: ['fill_blank', 'free_input', 'multiple_choice'],
+		questionTypeWeights: [35, 35, 30]
+	}
+];
+
+/**
+ * CE1 Multiplication templates by sub-level.
+ * SL5: x2, x5 tables
+ * SL6: x3, x4, x10 tables
+ */
+const ce1Multiplication: TemplateConfig[] = [
+	{
+		topic: 'multiplication',
+		grade: 'ce1',
+		subLevel: 5,
+		operandA: { min: 1, max: 10 },
+		operandB: { min: 2, max: 5 },
+		resultRange: { min: 2, max: 50 },
+		distractorStrategies: ['off_by_one', 'wrong_operation', 'random_nearby'],
+		questionTypes: ['multiple_choice', 'fill_blank', 'free_input'],
+		questionTypeWeights: [50, 30, 20],
+		constraints: ['b_in_2_5']
+	},
+	{
+		topic: 'multiplication',
+		grade: 'ce1',
+		subLevel: 6,
+		operandA: { min: 1, max: 10 },
+		operandB: { min: 3, max: 10 },
+		resultRange: { min: 3, max: 100 },
+		distractorStrategies: ['off_by_one', 'wrong_operation', 'random_nearby'],
+		questionTypes: ['multiple_choice', 'fill_blank', 'free_input'],
+		questionTypeWeights: [40, 30, 30],
+		constraints: ['b_in_3_4_10']
+	}
+];
+
+function getAllTemplates(): TemplateConfig[] {
+	return [
+		...cpAddition,
+		...cpSubtraction,
+		...cpCounting,
+		...cpOrdering,
+		...ce1Addition,
+		...ce1Subtraction,
+		...ce1Multiplication
+	];
+}
+
 export function getTemplate(
 	topic: string,
 	grade: string,
 	subLevel: number
 ): TemplateConfig | undefined {
-	const all = [...cpAddition, ...cpSubtraction, ...cpCounting, ...cpOrdering];
-	return all.find((t) => t.topic === topic && t.grade === grade && t.subLevel === subLevel);
+	return getAllTemplates().find(
+		(t) => t.topic === topic && t.grade === grade && t.subLevel === subLevel
+	);
 }
 
 export function getTemplatesForTopic(topic: string, grade: string): TemplateConfig[] {
-	const all = [...cpAddition, ...cpSubtraction, ...cpCounting, ...cpOrdering];
-	return all.filter((t) => t.topic === topic && t.grade === grade);
+	return getAllTemplates().filter((t) => t.topic === topic && t.grade === grade);
 }
 
 export function getAvailableTopics(grade: string): string[] {
 	if (grade === 'cp') return ['counting', 'ordering', 'addition', 'subtraction'];
+	if (grade === 'ce1') return ['addition', 'subtraction', 'multiplication'];
 	return ['addition', 'subtraction'];
 }
 
 export function getStartingSubLevel(topic: string): number {
 	if (topic === 'subtraction') return 3;
+	if (topic === 'multiplication') return 5;
 	return 1;
 }

@@ -1,6 +1,11 @@
 import type { Question, QuestionType, TemplateConfig, Topic, Grade } from './types';
 import { generateDistractors, shuffleChoices } from './distractors';
-import { getTemplate, getAvailableTopics, getStartingSubLevel } from './templates';
+import {
+	getTemplate,
+	getTemplatesForTopic,
+	getAvailableTopics,
+	getStartingSubLevel
+} from './templates';
 
 function randomInt(min: number, max: number): number {
 	return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -48,6 +53,14 @@ function generateFromTemplate(
 				prompt = `${a} - ${b} = ?`;
 				operation = 'subtraction';
 				break;
+			case 'multiplication': {
+				// Apply constraints for specific table sets
+				const effectiveB = applyMultiplicationConstraint(b, template.constraints);
+				correctValue = a * effectiveB;
+				prompt = `${a} × ${effectiveB} = ?`;
+				operation = 'multiplication';
+				break;
+			}
 			case 'counting':
 				correctValue = a;
 				prompt = generateCountingPrompt(a, template.subLevel);
@@ -98,6 +111,18 @@ function generateFromTemplate(
 	}
 
 	return null;
+}
+
+function applyMultiplicationConstraint(b: number, constraints?: string[]): number {
+	if (!constraints || constraints.length === 0) return b;
+	if (constraints.includes('b_in_2_5')) {
+		return Math.random() < 0.5 ? 2 : 5;
+	}
+	if (constraints.includes('b_in_3_4_10')) {
+		const options = [3, 4, 10];
+		return options[Math.floor(Math.random() * options.length)];
+	}
+	return b;
 }
 
 function formatPrompt(basePrompt: string, type: QuestionType): string {
@@ -256,7 +281,13 @@ export function generateSessionQuestions(
 function getMaxSubLevel(topic: string, grade: string, requestedLevel: number): number {
 	const startLevel = getStartingSubLevel(topic);
 	if (requestedLevel < startLevel) return startLevel;
-	return requestedLevel;
+
+	// Find the highest available template for this topic/grade
+	const templates = getTemplatesForTopic(topic, grade);
+	if (templates.length === 0) return requestedLevel;
+
+	const maxAvailable = Math.max(...templates.map((t) => t.subLevel));
+	return Math.min(requestedLevel, maxAvailable);
 }
 
 /**

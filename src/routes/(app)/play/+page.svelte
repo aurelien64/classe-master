@@ -15,11 +15,17 @@
 	let answerDisabled = $state(false);
 
 	onMount(() => {
-		const grade = playerStore.player?.grade ?? 'cp';
-		const subLevel = 1;
-		gameStore.startSession(grade, subLevel);
-		questionStartTime = Date.now();
-		startTimer();
+		const player = playerStore.player;
+		const grade = player?.grade ?? 'cp';
+		const playerId = player?.id ?? 'anonymous';
+
+		// Init progression from IndexedDB, then start session
+		gameStore.initProgress(playerId, grade).then(() => {
+			const subLevel = gameStore.getSubLevelForTopic('addition');
+			gameStore.startSession(grade, subLevel);
+			questionStartTime = Date.now();
+			startTimer();
+		});
 
 		return () => {
 			if (timerInterval) clearInterval(timerInterval);
@@ -56,7 +62,8 @@
 	function handlePlayAgain() {
 		gameStore.reset();
 		const grade = playerStore.player?.grade ?? 'cp';
-		gameStore.startSession(grade, 1);
+		const subLevel = gameStore.getSubLevelForTopic('addition');
+		gameStore.startSession(grade, subLevel);
 		questionStartTime = Date.now();
 		answerDisabled = false;
 		if (timerInterval) clearInterval(timerInterval);

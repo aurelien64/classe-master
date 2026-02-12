@@ -3,6 +3,13 @@ import { generateSessionQuestions } from '$lib/engine/generator';
 import { calculateScore, calculateCoins, SESSION_COMPLETION_BONUS } from '$lib/engine/scoring';
 import { getHints, type Hint } from '$lib/engine/hints';
 import { queueSessionForSync } from '$lib/utils/sync';
+import {
+	loadProgress,
+	saveProgress,
+	recordAnswer,
+	getCurrentSubLevel,
+	type ProgressState
+} from '$lib/engine/progression';
 
 const SESSION_DURATION = 5 * 60 * 1000; // 5 minutes
 const GRACE_PERIOD = 15 * 1000; // 15 seconds
@@ -14,6 +21,17 @@ function createGameStore() {
 	let lastFeedback = $state<{ correct: boolean; correctAnswer: string } | null>(null);
 	let currentHints = $state<Hint[]>([]);
 	let hintsRevealed = $state(0);
+	let progressState = $state<ProgressState | null>(null);
+	let advancements = $state<string[]>([]);
+
+	async function initProgress(playerId: string, grade: Grade): Promise<void> {
+		progressState = await loadProgress(playerId, grade);
+	}
+
+	function getSubLevelForTopic(topic: Topic): number {
+		if (!progressState) return 1;
+		return getCurrentSubLevel(progressState, topic);
+	}
 
 	function startSession(grade: Grade, subLevel: number): void {
 		const questions = generateSessionQuestions(grade, subLevel);
@@ -35,6 +53,7 @@ function createGameStore() {
 		inGracePeriod = false;
 		lastFeedback = null;
 		hintsRevealed = 0;
+		advancements = [];
 		updateCurrentHints();
 	}
 
@@ -90,6 +109,19 @@ function createGameStore() {
 			session.comboStreak = 0;
 		}
 
+		// Record answer in progression
+		if (progressState) {
+			const { progress, advanced } = recordAnswer(progressState, question.topic, {
+				isCorrect,
+				hintsUsed: hintsRevealed,
+				timestamp: Date.now()
+			});
+			progressState = progress;
+			if (advanced) {
+				advancements = [...advancements, question.topic];
+			}
+		}
+
 		lastFeedback = { correct: isCorrect, correctAnswer: question.correctAnswer };
 
 		return result;
@@ -108,10 +140,15 @@ function createGameStore() {
 		}
 	}
 
-	function finishSession(): void {
+	async function finishSession(): Promise<void> {
 		if (!session || session.isFinished) return;
 		session.score += SESSION_COMPLETION_BONUS;
 		session.isFinished = true;
+
+		// Save progression
+		if (progressState) {
+			await saveProgress(progressState);
+		}
 
 		// Queue for sync
 		const correct = session.answers.filter((a) => a.isCorrect).length;
@@ -177,7 +214,8 @@ function createGameStore() {
 			accuracy: total > 0 ? Math.round((correct / total) * 100) : 0,
 			comboMax: getMaxStreak(),
 			xpEarned: session.score,
-			coinsEarned: calculateCoins(correct, session.subLevel)
+			coinsEarned: calculateCoins(correct, session.subLevel),
+			advancements
 		};
 	}
 
@@ -188,6 +226,7 @@ function createGameStore() {
 		lastFeedback = null;
 		currentHints = [];
 		hintsRevealed = 0;
+		advancements = [];
 	}
 
 	return {
@@ -209,7 +248,15 @@ function createGameStore() {
 		get hintsRevealed() {
 			return hintsRevealed;
 		},
+		get progressState() {
+			return progressState;
+		},
+		get advancements() {
+			return advancements;
+		},
 		getCurrentQuestion,
+		initProgress,
+		getSubLevelForTopic,
 		startSession,
 		submitAnswer,
 		nextQuestion,

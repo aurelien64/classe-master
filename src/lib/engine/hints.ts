@@ -19,6 +19,8 @@ export function getHints(
 			return getAdditionHints(operands.a, operands.b ?? 0, parseInt(correctAnswer));
 		case 'subtraction':
 			return getSubtractionHints(operands.a, operands.b ?? 0, parseInt(correctAnswer));
+		case 'multiplication':
+			return getMultiplicationHints(operands.a, operands.b ?? 0, parseInt(correctAnswer));
 		case 'counting':
 			return getCountingHints(parseInt(correctAnswer));
 		case 'ordering':
@@ -48,6 +50,18 @@ function getSubtractionHints(a: number, b: number, result: number): Hint[] {
 			tier: 3,
 			text: `${a} - ${b} = ${result}. En partant de ${a}, recule de ${b} pour arriver à ${result}.`
 		}
+	];
+}
+
+function getMultiplicationHints(a: number, b: number, result: number): Hint[] {
+	const repeatedAddition = Array(Math.min(b, 5)).fill(a).join(' + ');
+	return [
+		{ tier: 1, text: `Multiplier, c'est comme additionner plusieurs fois le même nombre.` },
+		{
+			tier: 2,
+			text: `${a} × ${b}, c'est ${a} ajouté ${b} fois : ${repeatedAddition}${b > 5 ? '...' : ''}.`
+		},
+		{ tier: 3, text: `${a} × ${b} = ${result}.` }
 	];
 }
 

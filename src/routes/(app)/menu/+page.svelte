@@ -46,6 +46,7 @@
 	<!-- Main actions -->
 	<div class="mt-8 flex w-full max-w-xs flex-col gap-4">
 		<Button href="/play">{$_('menu.play')}</Button>
-		<Button variant="secondary" href="/settings">{$_('menu.settings')}</Button>
+		<Button variant="secondary" href="/progress">{$_('menu.progress')}</Button>
+		<Button variant="ghost" href="/settings">{$_('menu.settings')}</Button>
 	</div>
 </main>

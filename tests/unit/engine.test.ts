@@ -44,6 +44,36 @@ describe('templates', () => {
 		expect(topics).toContain('counting');
 		expect(topics).toContain('ordering');
 	});
+
+	it('returns CE1 addition templates for sub-levels 1-4', () => {
+		const templates = getTemplatesForTopic('addition', 'ce1');
+		expect(templates.length).toBe(4);
+		for (let sl = 1; sl <= 4; sl++) {
+			expect(templates.find((t) => t.subLevel === sl)).toBeDefined();
+		}
+	});
+
+	it('returns CE1 subtraction templates for sub-levels 3-4', () => {
+		const templates = getTemplatesForTopic('subtraction', 'ce1');
+		expect(templates.length).toBe(2);
+		expect(templates.find((t) => t.subLevel === 3)).toBeDefined();
+		expect(templates.find((t) => t.subLevel === 4)).toBeDefined();
+	});
+
+	it('returns CE1 multiplication templates for sub-levels 5-6', () => {
+		const templates = getTemplatesForTopic('multiplication', 'ce1');
+		expect(templates.length).toBe(2);
+		expect(templates.find((t) => t.subLevel === 5)).toBeDefined();
+		expect(templates.find((t) => t.subLevel === 6)).toBeDefined();
+	});
+
+	it('getAvailableTopics returns CE1 topics', () => {
+		const topics = getAvailableTopics('ce1');
+		expect(topics).toContain('addition');
+		expect(topics).toContain('subtraction');
+		expect(topics).toContain('multiplication');
+		expect(topics).not.toContain('counting');
+	});
 });
 
 describe('distractors', () => {
@@ -200,5 +230,42 @@ describe('generator', () => {
 		for (const q of questions) {
 			expect(q.topic).toBe('ordering');
 		}
+	});
+
+	it('generates CE1 addition questions with correct answers', () => {
+		const questions = generateTopicQuestions('addition', 'ce1', 3, 20);
+		expect(questions.length).toBeGreaterThan(0);
+		for (const q of questions) {
+			const expected = q.operands.a + (q.operands.b ?? 0);
+			expect(parseInt(q.correctAnswer)).toBe(expected);
+		}
+	});
+
+	it('generates CE1 subtraction questions with non-negative results', () => {
+		const questions = generateTopicQuestions('subtraction', 'ce1', 4, 20);
+		expect(questions.length).toBeGreaterThan(0);
+		for (const q of questions) {
+			expect(parseInt(q.correctAnswer)).toBeGreaterThanOrEqual(0);
+			expect(q.operands.a).toBeGreaterThanOrEqual(q.operands.b ?? 0);
+		}
+	});
+
+	it('generates CE1 multiplication questions with correct answers', () => {
+		const questions = generateTopicQuestions('multiplication', 'ce1', 5, 20);
+		expect(questions.length).toBeGreaterThan(0);
+		for (const q of questions) {
+			expect(q.topic).toBe('multiplication');
+			const answer = parseInt(q.correctAnswer);
+			expect(answer).toBeGreaterThan(0);
+			// The answer should be a × b (b is constrained to 2 or 5 for SL5)
+			expect(q.prompt).toContain('\u00D7');
+		}
+	});
+
+	it('generates CE1 session with mixed topics', () => {
+		const questions = generateSessionQuestions('ce1', 5, 12);
+		expect(questions.length).toBeGreaterThan(0);
+		const topics = new Set(questions.map((q) => q.topic));
+		expect(topics.size).toBeGreaterThan(1);
 	});
 });

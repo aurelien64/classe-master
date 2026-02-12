@@ -214,4 +214,13 @@ describe('hints', () => {
 		const hints = getHints('addition', { a: 4, b: 3 }, '7');
 		expect(hints[2].text).toContain('7');
 	});
+
+	it('returns 3 hints for multiplication', () => {
+		const hints = getHints('multiplication', { a: 3, b: 5 }, '15');
+		expect(hints.length).toBe(3);
+		expect(hints[0].tier).toBe(1);
+		expect(hints[1].tier).toBe(2);
+		expect(hints[2].tier).toBe(3);
+		expect(hints[2].text).toContain('15');
+	});
 });

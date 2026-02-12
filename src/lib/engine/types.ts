@@ -1,5 +1,5 @@
 export type Grade = 'cp' | 'ce1';
-export type Topic = 'addition' | 'subtraction' | 'counting' | 'ordering';
+export type Topic = 'addition' | 'subtraction' | 'counting' | 'ordering' | 'multiplication';
 
 export type QuestionType =
 	| 'multiple_choice'
