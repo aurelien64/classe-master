@@ -1,5 +1,8 @@
 import type { Question, AnswerResult, SessionState, Grade, Topic } from '$lib/engine/types';
 import { generateSessionQuestions } from '$lib/engine/generator';
+import { calculateScore, calculateCoins, SESSION_COMPLETION_BONUS } from '$lib/engine/scoring';
+import { getHints, type Hint } from '$lib/engine/hints';
+import { queueSessionForSync } from '$lib/utils/sync';
 
 const SESSION_DURATION = 5 * 60 * 1000; // 5 minutes
 const GRACE_PERIOD = 15 * 1000; // 15 seconds
@@ -9,6 +12,8 @@ function createGameStore() {
 	let timeRemaining = $state(SESSION_DURATION);
 	let inGracePeriod = $state(false);
 	let lastFeedback = $state<{ correct: boolean; correctAnswer: string } | null>(null);
+	let currentHints = $state<Hint[]>([]);
+	let hintsRevealed = $state(0);
 
 	function startSession(grade: Grade, subLevel: number): void {
 		const questions = generateSessionQuestions(grade, subLevel);
@@ -29,6 +34,8 @@ function createGameStore() {
 		timeRemaining = SESSION_DURATION;
 		inGracePeriod = false;
 		lastFeedback = null;
+		hintsRevealed = 0;
+		updateCurrentHints();
 	}
 
 	function getCurrentQuestion(): Question | null {
@@ -36,11 +43,22 @@ function createGameStore() {
 		return session.questions[session.currentIndex];
 	}
 
-	function submitAnswer(
-		playerAnswer: string,
-		timeTakenMs: number,
-		hintUsed: boolean = false
-	): AnswerResult | null {
+	function updateCurrentHints(): void {
+		const question = getCurrentQuestion();
+		if (question) {
+			currentHints = getHints(question.topic, question.operands, question.correctAnswer);
+		} else {
+			currentHints = [];
+		}
+	}
+
+	function revealHint(): Hint | null {
+		if (hintsRevealed >= currentHints.length) return null;
+		hintsRevealed++;
+		return currentHints[hintsRevealed - 1];
+	}
+
+	function submitAnswer(playerAnswer: string, timeTakenMs: number): AnswerResult | null {
 		if (!session) return null;
 		const question = getCurrentQuestion();
 		if (!question) return null;
@@ -53,19 +71,21 @@ function createGameStore() {
 			correctAnswer: question.correctAnswer,
 			isCorrect,
 			timeTakenMs,
-			hintUsed
+			hintUsed: hintsRevealed > 0
 		};
 
 		session.answers.push(result);
 
 		if (isCorrect) {
 			session.comboStreak++;
-			const basePoints = 10;
-			const speedBonus =
-				timeTakenMs < 3000 ? 5 : timeTakenMs < 5000 ? 3 : timeTakenMs < 10000 ? 1 : 0;
-			const comboBonus = Math.min(session.comboStreak * 2, 10);
-			const hintMultiplier = hintUsed ? 0.7 : 1;
-			session.score += Math.round((basePoints + speedBonus + comboBonus) * hintMultiplier);
+			const points = calculateScore({
+				isCorrect: true,
+				timeTakenMs,
+				hintsUsed: hintsRevealed,
+				comboStreak: session.comboStreak,
+				subLevel: session.subLevel
+			});
+			session.score += points;
 		} else {
 			session.comboStreak = 0;
 		}
@@ -79,16 +99,61 @@ function createGameStore() {
 		if (!session) return;
 		session.currentIndex++;
 		lastFeedback = null;
+		hintsRevealed = 0;
 
 		if (session.currentIndex >= session.questions.length) {
 			finishSession();
+		} else {
+			updateCurrentHints();
 		}
 	}
 
 	function finishSession(): void {
-		if (!session) return;
-		session.score += 20; // completion bonus
+		if (!session || session.isFinished) return;
+		session.score += SESSION_COMPLETION_BONUS;
 		session.isFinished = true;
+
+		// Queue for sync
+		const correct = session.answers.filter((a) => a.isCorrect).length;
+		queueSessionForSync({
+			sessionId: session.id,
+			grade: session.grade,
+			subLevel: session.subLevel,
+			topic: session.topic,
+			startedAt: new Date(session.startedAt).toISOString(),
+			endedAt: new Date().toISOString(),
+			durationSeconds: Math.round((Date.now() - session.startedAt) / 1000),
+			score: session.score,
+			questionsTotal: session.answers.length,
+			questionsCorrect: correct,
+			xpEarned: session.score,
+			coinsEarned: calculateCoins(correct, session.subLevel),
+			streakMax: getMaxStreak(),
+			answers: session.answers.map((a) => ({
+				questionType: 'answer',
+				questionData: {},
+				playerAnswer: a.playerAnswer,
+				correctAnswer: a.correctAnswer,
+				isCorrect: a.isCorrect,
+				timeTakenMs: a.timeTakenMs,
+				hintsUsed: a.hintUsed ? 1 : 0
+			}))
+		});
+	}
+
+	function getMaxStreak(): number {
+		if (!session) return 0;
+		let streak = 0;
+		let max = 0;
+		for (const answer of session.answers) {
+			if (answer.isCorrect) {
+				streak++;
+				max = Math.max(max, streak);
+			} else {
+				streak = 0;
+			}
+		}
+		return max;
 	}
 
 	function updateTimer(remaining: number): void {
@@ -110,24 +175,9 @@ function createGameStore() {
 			correct,
 			total,
 			accuracy: total > 0 ? Math.round((correct / total) * 100) : 0,
-			comboMax: Math.max(
-				...session.answers.map((_, i) => {
-					let streak = 0;
-					let max = 0;
-					for (let j = 0; j <= i; j++) {
-						if (session!.answers[j].isCorrect) {
-							streak++;
-							max = Math.max(max, streak);
-						} else {
-							streak = 0;
-						}
-					}
-					return max;
-				}),
-				0
-			),
+			comboMax: getMaxStreak(),
 			xpEarned: session.score,
-			coinsEarned: correct * 2 + 10
+			coinsEarned: calculateCoins(correct, session.subLevel)
 		};
 	}
 
@@ -136,6 +186,8 @@ function createGameStore() {
 		timeRemaining = SESSION_DURATION;
 		inGracePeriod = false;
 		lastFeedback = null;
+		currentHints = [];
+		hintsRevealed = 0;
 	}
 
 	return {
@@ -151,6 +203,12 @@ function createGameStore() {
 		get lastFeedback() {
 			return lastFeedback;
 		},
+		get currentHints() {
+			return currentHints;
+		},
+		get hintsRevealed() {
+			return hintsRevealed;
+		},
 		getCurrentQuestion,
 		startSession,
 		submitAnswer,
@@ -158,6 +216,7 @@ function createGameStore() {
 		finishSession,
 		updateTimer,
 		getResults,
+		revealHint,
 		reset
 	};
 }

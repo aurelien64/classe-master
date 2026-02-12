@@ -50,6 +50,7 @@
 		gameStore.nextQuestion();
 		questionStartTime = Date.now();
 		answerDisabled = false;
+		showHint = '';
 	}
 
 	function handlePlayAgain() {
@@ -67,9 +68,17 @@
 		goto('/menu');
 	}
 
+	let showHint = $state('');
+
+	function handleHint() {
+		const hint = gameStore.revealHint();
+		if (hint) showHint = hint.text;
+	}
+
 	const currentQuestion = $derived(gameStore.getCurrentQuestion());
 	const results = $derived(gameStore.getResults());
 	const isFinished = $derived(gameStore.session?.isFinished ?? false);
+	const canShowHint = $derived(gameStore.hintsRevealed < gameStore.currentHints.length);
 </script>
 
 <svelte:head>
@@ -111,10 +120,30 @@
 			{(gameStore.session?.currentIndex ?? 0) + 1} / {gameStore.session?.questions.length ?? 0}
 		</div>
 
+		<!-- Hint area -->
+		{#if showHint}
+			<div class="mx-4 rounded-[--radius-md] bg-warning/10 p-3 text-center text-sm text-text">
+				&#128161; {showHint}
+			</div>
+		{/if}
+
 		<!-- Question -->
 		<div class="flex flex-1 items-center justify-center px-4 py-6">
 			<QuestionCard question={currentQuestion} onAnswer={handleAnswer} disabled={answerDisabled} />
 		</div>
+
+		<!-- Hint button -->
+		{#if canShowHint && !answerDisabled}
+			<div class="flex justify-center pb-4">
+				<button
+					type="button"
+					class="flex items-center gap-1 rounded-full bg-warning/20 px-4 py-2 text-sm font-medium text-text-muted transition-transform active:scale-95"
+					onclick={handleHint}
+				>
+					&#128161; {$_('game.hint')}
+				</button>
+			</div>
+		{/if}
 	</div>
 
 	<!-- Feedback overlay -->

@@ -32,7 +32,8 @@
 		"correctCount": "Correct answers",
 		"accuracy": "Accuracy",
 		"coins": "Coins",
-		"playAgain": "Play again"
+		"playAgain": "Play again",
+		"hint": "Hint"
 	},
 	"auth": {
 		"enterCode": "Enter your class code",

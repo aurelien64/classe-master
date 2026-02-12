@@ -32,7 +32,8 @@
 		"correctCount": "Bonnes réponses",
 		"accuracy": "Précision",
 		"coins": "Pièces",
-		"playAgain": "Rejouer"
+		"playAgain": "Rejouer",
+		"hint": "Indice"
 	},
 	"auth": {
 		"enterCode": "Entre le code de ta classe",
