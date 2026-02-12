@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192" width="192" height="192">
+  <rect width="192" height="192" rx="24" fill="#4F46E5"/>
+  <text x="96" y="72" text-anchor="middle" font-family="system-ui, sans-serif" font-size="48" font-weight="bold" fill="white">CM</text>
+  <text x="96" y="130" text-anchor="middle" font-family="system-ui, sans-serif" font-size="24" fill="#C7D2FE">Classe</text>
+  <text x="96" y="158" text-anchor="middle" font-family="system-ui, sans-serif" font-size="24" fill="#C7D2FE">Master</text>
+</svg>

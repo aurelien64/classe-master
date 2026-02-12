@@ -1,0 +1,51 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Type check
+        run: pnpm check
+
+      - name: Unit tests
+        run: pnpm test
+
+      - name: Build
+        run: pnpm build
+
+      - name: Check bundle size
+        run: |
+          TOTAL_SIZE=$(find build -name '*.js' -exec gzip -c {} \; | wc -c)
+          TOTAL_KB=$((TOTAL_SIZE / 1024))
+          echo "Total gzipped JS: ${TOTAL_KB} KB"
+          if [ "$TOTAL_KB" -gt 150 ]; then
+            echo "::error::Bundle size ${TOTAL_KB} KB exceeds 150 KB limit"
+            exit 1
+          fi

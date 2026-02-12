@@ -1,0 +1,94 @@
+@import 'tailwindcss';
+
+/* === Design Tokens === */
+
+@theme {
+	/* Primary palette */
+	--color-primary: #4f46e5;
+	--color-primary-light: #818cf8;
+	--color-primary-dark: #3730a3;
+
+	/* Game feedback */
+	--color-success: #22c55e;
+	--color-success-light: #86efac;
+	--color-error: #f87171;
+	--color-error-light: #fecaca;
+	--color-warning: #fbbf24;
+
+	/* Game rewards */
+	--color-xp-gold: #f59e0b;
+	--color-gem-purple: #a855f7;
+
+	/* Rarity colors */
+	--color-rarity-common: #9ca3af;
+	--color-rarity-rare: #3b82f6;
+	--color-rarity-epic: #8b5cf6;
+	--color-rarity-legendary: #f59e0b;
+	--color-rarity-mythic: #ef4444;
+
+	/* Answer button backgrounds */
+	--color-answer-a: #dbeafe;
+	--color-answer-b: #d1fae5;
+	--color-answer-c: #fce7f3;
+	--color-answer-d: #fef3c7;
+
+	/* Timer (anti-anxiety: never red) */
+	--color-timer-ok: #22c55e;
+	--color-timer-warn: #fbbf24;
+	--color-timer-urgent: #fb923c;
+
+	/* Mastery heatmap */
+	--color-mastery-low: #ef4444;
+	--color-mastery-mid: #fbbf24;
+	--color-mastery-good: #86efac;
+	--color-mastery-high: #22c55e;
+
+	/* Neutral */
+	--color-bg: #f8fafc;
+	--color-bg-card: #ffffff;
+	--color-text: #1e293b;
+	--color-text-muted: #64748b;
+	--color-border: #e2e8f0;
+
+	/* Typography scale */
+	--font-size-xs: 0.875rem; /* 14px - smallest text */
+	--font-size-sm: 1rem; /* 16px - body small */
+	--font-size-base: 1.125rem; /* 18px - body */
+	--font-size-lg: 1.25rem; /* 20px - question text */
+	--font-size-xl: 1.5rem; /* 24px - answer buttons */
+	--font-size-2xl: 1.75rem; /* 28px - numpad digits */
+	--font-size-3xl: 2.25rem; /* 36px - display area */
+
+	/* Touch target sizes */
+	--size-touch-min: 48px;
+	--size-touch-primary: 56px;
+
+	/* Spacing */
+	--spacing-touch-gap: 12px;
+	--spacing-numpad-gap: 8px;
+
+	/* Border radius */
+	--radius-sm: 0.5rem;
+	--radius-md: 0.75rem;
+	--radius-lg: 1rem;
+	--radius-full: 9999px;
+}
+
+/* === Base styles === */
+
+html {
+	font-family:
+		system-ui,
+		-apple-system,
+		'Segoe UI',
+		Roboto,
+		sans-serif;
+	-webkit-tap-highlight-color: transparent;
+	-webkit-font-smoothing: antialiased;
+}
+
+body {
+	background-color: var(--color-bg);
+	color: var(--color-text);
+	min-height: 100dvh;
+}

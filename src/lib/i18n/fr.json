@@ -1,0 +1,44 @@
+{
+	"app": {
+		"name": "Classe Master",
+		"tagline": "Apprends les maths en t'amusant !"
+	},
+	"welcome": {
+		"title": "Bienvenue !",
+		"play": "Jouer",
+		"join": "Rejoindre une classe"
+	},
+	"menu": {
+		"play": "Jouer",
+		"progress": "Ma progression",
+		"shop": "Boutique",
+		"settings": "Paramètres",
+		"leaderboard": "Classement"
+	},
+	"game": {
+		"validate": "Valider",
+		"next": "Suivant",
+		"score": "Score",
+		"streak": "Série",
+		"correct": "Bravo !",
+		"incorrect": "Essaie encore !",
+		"timeUp": "Temps écoulé !",
+		"xpEarned": "{xp} XP gagnés !",
+		"gemsEarned": "{gems} gemmes gagnées !"
+	},
+	"auth": {
+		"enterCode": "Entre le code de ta classe",
+		"enterPin": "Entre ton code secret",
+		"chooseAvatar": "Choisis ton avatar",
+		"chooseUsername": "Choisis ton pseudo"
+	},
+	"common": {
+		"loading": "Chargement...",
+		"error": "Oups, une erreur est survenue",
+		"retry": "Réessayer",
+		"back": "Retour",
+		"cancel": "Annuler",
+		"confirm": "Confirmer",
+		"save": "Enregistrer"
+	}
+}

@@ -1,0 +1,44 @@
+{
+	"app": {
+		"name": "Classe Master",
+		"tagline": "Learn math while having fun!"
+	},
+	"welcome": {
+		"title": "Welcome!",
+		"play": "Play",
+		"join": "Join a class"
+	},
+	"menu": {
+		"play": "Play",
+		"progress": "My progress",
+		"shop": "Shop",
+		"settings": "Settings",
+		"leaderboard": "Leaderboard"
+	},
+	"game": {
+		"validate": "Validate",
+		"next": "Next",
+		"score": "Score",
+		"streak": "Streak",
+		"correct": "Well done!",
+		"incorrect": "Try again!",
+		"timeUp": "Time's up!",
+		"xpEarned": "{xp} XP earned!",
+		"gemsEarned": "{gems} gems earned!"
+	},
+	"auth": {
+		"enterCode": "Enter your class code",
+		"enterPin": "Enter your secret code",
+		"chooseAvatar": "Choose your avatar",
+		"chooseUsername": "Choose your username"
+	},
+	"common": {
+		"loading": "Loading...",
+		"error": "Oops, something went wrong",
+		"retry": "Retry",
+		"back": "Back",
+		"cancel": "Cancel",
+		"confirm": "Confirm",
+		"save": "Save"
+	}
+}

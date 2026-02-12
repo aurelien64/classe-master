@@ -1,0 +1,37 @@
+# Dependencies
+node_modules/
+
+# Build output
+build/
+dist/
+.svelte-kit/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Testing
+test-results/
+playwright-report/
+coverage/
+
+# Vercel / Cloudflare
+.vercel/
+.wrangler/
+
+# PWA dev
+dev-dist/
+
+# Ignore insiders AI rules
+.github/instructions/codacy.instructions.md
