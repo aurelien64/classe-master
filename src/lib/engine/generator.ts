@@ -35,7 +35,7 @@ function generateFromTemplate(
 ): Question | null {
 	for (let attempt = 0; attempt < 10; attempt++) {
 		const a = randomInt(template.operandA.min, template.operandA.max);
-		const b = randomInt(template.operandB.min, template.operandB.max);
+		let b = randomInt(template.operandB.min, template.operandB.max);
 
 		let correctValue: number;
 		let prompt: string;
@@ -59,6 +59,17 @@ function generateFromTemplate(
 				correctValue = a * effectiveB;
 				prompt = `${a} × ${effectiveB} = ?`;
 				operation = 'multiplication';
+				// Use effectiveB for fingerprint, operands, and distractors
+				b = effectiveB;
+				break;
+			}
+			case 'division': {
+				// operandA = quotient range, operandB = divisor range
+				if (b === 0) continue;
+				correctValue = a; // quotient
+				const dividend = a * b;
+				prompt = `${dividend} ÷ ${b} = ?`;
+				operation = 'division';
 				break;
 			}
 			case 'counting':
@@ -99,11 +110,17 @@ function generateFromTemplate(
 		};
 
 		if (questionType === 'multiple_choice') {
-			const distractorValues = generateDistractors(correctValue, template.distractorStrategies, 2, {
-				a,
-				b,
-				operation
-			});
+			const distractorCount = template.grade === 'cp' ? 2 : 3;
+			const distractorValues = generateDistractors(
+				correctValue,
+				template.distractorStrategies,
+				distractorCount,
+				{
+					a,
+					b,
+					operation
+				}
+			);
 			question.choices = shuffleChoices([correctAnswer, ...distractorValues.map(String)]);
 		}
 
@@ -121,6 +138,12 @@ function applyMultiplicationConstraint(b: number, constraints?: string[]): numbe
 	if (constraints.includes('b_in_3_4_10')) {
 		const options = [3, 4, 10];
 		return options[Math.floor(Math.random() * options.length)];
+	}
+	if (constraints.includes('b_in_6_7')) {
+		return Math.random() < 0.5 ? 6 : 7;
+	}
+	if (constraints.includes('b_in_8_9')) {
+		return Math.random() < 0.5 ? 8 : 9;
 	}
 	return b;
 }
@@ -196,11 +219,11 @@ function generateOrderingQuestion(
 
 function getTimeLimit(type: QuestionType, grade: Grade): number {
 	const timeLimits: Record<QuestionType, Record<Grade, number>> = {
-		multiple_choice: { cp: 15, ce1: 12 },
-		fill_blank: { cp: 20, ce1: 18 },
-		free_input: { cp: 25, ce1: 20 },
-		comparison: { cp: 12, ce1: 10 },
-		true_false: { cp: 8, ce1: 7 }
+		multiple_choice: { cp: 15, ce1: 12, ce2: 12, cm1: 10, cm2: 10 },
+		fill_blank: { cp: 20, ce1: 18, ce2: 20, cm1: 25, cm2: 25 },
+		free_input: { cp: 25, ce1: 20, ce2: 25, cm1: 30, cm2: 30 },
+		comparison: { cp: 12, ce1: 10, ce2: 10, cm1: 8, cm2: 8 },
+		true_false: { cp: 8, ce1: 7, ce2: 7, cm1: 6, cm2: 6 }
 	};
 	return timeLimits[type]?.[grade] ?? 15;
 }

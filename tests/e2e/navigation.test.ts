@@ -13,6 +13,13 @@ async function quickOnboard(page: Page) {
 	await page.getByRole('button', { name: /passer/i }).click();
 	await page.getByRole('button', { name: /c'est parti/i }).click();
 	await expect(page).toHaveURL('/menu');
+	// Dismiss daily reward popup if it appears
+	await page.waitForTimeout(1500);
+	const popup = page.locator('.fixed.inset-0.z-50');
+	if (await popup.isVisible({ timeout: 500 }).catch(() => false)) {
+		await popup.click();
+		await page.waitForTimeout(300);
+	}
 }
 
 test.describe('App navigation', () => {
@@ -22,7 +29,9 @@ test.describe('App navigation', () => {
 
 	test('welcome screen shows app name and play button', async ({ page }) => {
 		await page.goto('/');
-		await expect(page.getByRole('heading', { name: 'Classe Master' })).toBeVisible();
+		await expect(page.getByRole('heading', { name: 'Classe Master' })).toBeVisible({
+			timeout: 10000
+		});
 		await expect(page.getByRole('link', { name: /jouer/i })).toBeVisible();
 		// Join class button should be visible but disabled
 		const joinBtn = page

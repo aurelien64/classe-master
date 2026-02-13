@@ -67,25 +67,31 @@ function getStrategyDistractors(
 			if (operands.operation === 'multiplication') {
 				return [operands.a + operands.b, Math.abs(operands.a - operands.b)];
 			}
+			if (operands.operation === 'division') {
+				return [operands.b, operands.a + operands.b];
+			}
 			return [correct + 2];
 
 		case 'forget_carry': {
 			// Simulates forgetting to carry: e.g., 17+15=22 instead of 32
-			if (!operands) return [correct - 10];
+			if (!operands) return [];
 			const unitSum = (operands.a % 10) + (operands.b % 10);
 			if (unitSum >= 10) {
 				return [correct - 10];
 			}
-			return [correct + 10];
+			// No carry to forget — strategy doesn't apply
+			return [];
 		}
 
 		case 'forget_borrow': {
-			if (!operands) return [correct + 10];
+			if (!operands) return [];
 			const unitDiff = (operands.a % 10) - (operands.b % 10);
 			if (unitDiff < 0) {
+				// Borrow was needed — forgetting it gives +10
 				return [correct + 10];
 			}
-			return [correct - 10];
+			// No borrow to forget — strategy doesn't apply
+			return [];
 		}
 
 		case 'random_nearby': {
@@ -95,13 +101,16 @@ function getStrategyDistractors(
 			return [r1, r2];
 		}
 
-		case 'digit_swap':
+		case 'digit_swap': {
 			if (correct >= 10) {
-				const digits = String(correct).split('').reverse().join('');
-				const swapped = parseInt(digits, 10);
+				const digits = String(correct).split('');
+				// Swap first two digits (adjacent swap, not full reversal)
+				[digits[0], digits[1]] = [digits[1], digits[0]];
+				const swapped = parseInt(digits.join(''), 10);
 				if (swapped !== correct) return [swapped];
 			}
 			return [correct + 2, correct - 2];
+		}
 
 		default:
 			return [correct + 1, correct - 1];

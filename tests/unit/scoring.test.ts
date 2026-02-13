@@ -15,7 +15,7 @@ describe('calculateScore', () => {
 		).toBe(0);
 	});
 
-	it('returns base 10 points for slow correct answer at low level', () => {
+	it('returns base points for slow correct answer at low level', () => {
 		const score = calculateScore({
 			isCorrect: true,
 			timeTakenMs: 15000,
@@ -23,8 +23,8 @@ describe('calculateScore', () => {
 			comboStreak: 0,
 			subLevel: 1
 		});
-		// 10 base + 0 speed + 0 combo, x1 difficulty = 10
-		expect(score).toBe(10);
+		// (10 base + 1 speed min) * x1 difficulty * x1 hint + 0 combo = 11
+		expect(score).toBe(11);
 	});
 
 	it('includes speed bonus for fast answers', () => {
@@ -78,6 +78,7 @@ describe('calculateScore', () => {
 			comboStreak: 10,
 			subLevel: 1
 		});
+		// combo5 = 11 + 10 = 21, combo10 = 11 + 10 = 21 (capped at +10)
 		expect(combo5).toBe(combo10);
 	});
 
@@ -108,7 +109,8 @@ describe('calculateScore', () => {
 			comboStreak: 0,
 			subLevel: 1
 		});
-		expect(twoHints).toBe(Math.round(10 * 0.4));
+		// (10 + 1) * 1 * 0.4 = 4.4, rounded = 4
+		expect(twoHints).toBe(Math.round(11 * 0.4));
 	});
 
 	it('minimum score with 3+ hints (20%, always > 0)', () => {

@@ -2,7 +2,7 @@
 	interface Props {
 		value: number;
 		max?: number;
-		color?: 'primary' | 'success' | 'xp' | 'gem';
+		color?: 'primary' | 'success' | 'xp' | 'gem' | 'warning';
 	}
 
 	let { value, max = 100, color = 'primary' }: Props = $props();
@@ -11,16 +11,24 @@
 
 	const colorClasses = $derived(
 		color === 'success'
-			? 'bg-success'
+			? 'bg-gradient-to-r from-success to-success-light'
 			: color === 'xp'
-				? 'bg-xp-gold'
+				? 'bg-gradient-to-r from-xp-gold to-warning'
 				: color === 'gem'
-					? 'bg-gem-purple'
-					: 'bg-primary'
+					? 'bg-gradient-to-r from-gem-purple to-primary-light'
+					: color === 'warning'
+						? 'bg-gradient-to-r from-warning to-xp-gold'
+						: 'bg-gradient-to-r from-primary to-primary-light'
 	);
 </script>
 
-<div class="h-3 w-full overflow-hidden rounded-full bg-border">
+<div
+	class="h-3 w-full overflow-hidden rounded-full bg-border/60"
+	role="progressbar"
+	aria-valuenow={value}
+	aria-valuemin={0}
+	aria-valuemax={max}
+>
 	<div
 		class="h-full rounded-full transition-all duration-500 ease-out {colorClasses}"
 		style="width: {percent}%"

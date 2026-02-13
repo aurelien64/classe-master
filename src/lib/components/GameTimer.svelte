@@ -9,9 +9,16 @@
 
 	let { duration, remaining, inGracePeriod = false }: Props = $props();
 
-	const percent = $derived(Math.max(0, (remaining / duration) * 100));
+	// Use time-based thresholds per spec: green > 60s, yellow > 30s, orange <= 30s
+	const remainingSeconds = $derived(Math.max(0, Math.ceil(remaining / 1000)));
 	const color = $derived(
-		inGracePeriod ? 'primary' : percent > 50 ? 'success' : percent > 20 ? 'xp' : 'gem'
+		inGracePeriod
+			? 'primary'
+			: remainingSeconds > 60
+				? 'success'
+				: remainingSeconds > 30
+					? 'xp'
+					: 'warning'
 	);
 </script>
 

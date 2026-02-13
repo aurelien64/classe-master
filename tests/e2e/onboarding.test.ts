@@ -32,6 +32,13 @@ async function completeOnboarding(page: Page, options?: { grade?: string; userna
 	// Avatar → confirm
 	await page.getByRole('button', { name: /c'est parti/i }).click();
 	await expect(page).toHaveURL('/menu');
+	// Dismiss daily reward popup if it appears
+	await page.waitForTimeout(1500);
+	const popup = page.locator('.fixed.inset-0.z-50');
+	if (await popup.isVisible({ timeout: 500 }).catch(() => false)) {
+		await popup.click();
+		await page.waitForTimeout(300);
+	}
 }
 
 test.describe('New user onboarding', () => {

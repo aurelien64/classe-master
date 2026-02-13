@@ -24,12 +24,13 @@ export function calculateScore(params: ScoreParams): number {
 	const basePoints = 10;
 	const speedBonus = getSpeedBonus(params.timeTakenMs);
 	const difficultyMultiplier = getDifficultyMultiplier(params.subLevel);
+	const hintMultiplier = getHintMultiplier(params.hintsUsed);
 	const comboBonus = Math.min(params.comboStreak * 2, 10);
 
-	const rawScore = (basePoints + speedBonus + comboBonus) * difficultyMultiplier;
-	const hintMultiplier = getHintMultiplier(params.hintsUsed);
+	// Per spec: (base + speed) * difficulty * hint + combo (combo is additive, not multiplied)
+	const baseScore = Math.round((basePoints + speedBonus) * difficultyMultiplier * hintMultiplier);
 
-	return Math.max(1, Math.round(rawScore * hintMultiplier));
+	return Math.max(1, baseScore + comboBonus);
 }
 
 function getSpeedBonus(timeTakenMs: number): number {
@@ -38,7 +39,7 @@ function getSpeedBonus(timeTakenMs: number): number {
 	if (timeTakenMs < 6000) return 3;
 	if (timeTakenMs < 8000) return 2;
 	if (timeTakenMs < 10000) return 1;
-	return 0;
+	return 1; // Spec: speed bonus minimum is 1
 }
 
 function getDifficultyMultiplier(subLevel: number): number {

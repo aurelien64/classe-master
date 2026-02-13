@@ -11,7 +11,7 @@
 	let { title, back, children, header }: Props = $props();
 </script>
 
-<div class="flex min-h-dvh flex-col bg-bg">
+<div class="flex flex-1 flex-col bg-bg">
 	{#if title || back || header}
 		<header class="flex items-center gap-3 px-4 py-3">
 			{#if back}

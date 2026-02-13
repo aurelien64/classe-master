@@ -22,14 +22,14 @@
 	}: Props = $props();
 
 	const baseClasses =
-		'flex items-center justify-center rounded-[--radius-md] font-bold transition-transform active:scale-95 min-h-[--size-touch-primary] w-full text-lg';
+		'flex items-center justify-center rounded-[--radius-xl] font-bold transition-all duration-150 active:scale-[0.97] min-h-[60px] w-full text-xl px-6';
 
 	const variantClasses = $derived(
 		variant === 'primary'
-			? 'bg-primary text-white shadow-md'
+			? 'bg-primary text-white shadow-[--shadow-card] hover:shadow-[--shadow-elevated] active:shadow-[--shadow-soft]'
 			: variant === 'secondary'
-				? 'border-2 border-primary text-primary bg-transparent'
-				: 'text-text-muted bg-transparent'
+				? 'border-2 border-primary text-primary bg-transparent hover:bg-primary/5'
+				: 'text-text-muted bg-transparent hover:bg-bg-card'
 	);
 
 	const stateClasses = $derived(disabled || loading ? 'opacity-50 pointer-events-none' : '');

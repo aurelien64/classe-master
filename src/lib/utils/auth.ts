@@ -5,7 +5,7 @@ import type { PlayerData } from '$lib/stores/player.svelte';
  * Creates a solo player (offline, no Supabase required).
  */
 export async function createSoloPlayer(
-	data: Omit<PlayerData, 'id' | 'level' | 'xp' | 'gems' | 'created_at'>
+	data: Omit<PlayerData, 'id' | 'level' | 'xp' | 'gems' | 'unlocked_avatars' | 'created_at'>
 ): Promise<PlayerData> {
 	return playerStore.createPlayer(data);
 }

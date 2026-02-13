@@ -1,5 +1,11 @@
-export type Grade = 'cp' | 'ce1';
-export type Topic = 'addition' | 'subtraction' | 'counting' | 'ordering' | 'multiplication';
+export type Grade = 'cp' | 'ce1' | 'ce2' | 'cm1' | 'cm2';
+export type Topic =
+	| 'addition'
+	| 'subtraction'
+	| 'counting'
+	| 'ordering'
+	| 'multiplication'
+	| 'division';
 
 export type QuestionType =
 	| 'multiple_choice'
@@ -53,7 +59,7 @@ export interface AnswerResult {
 	correctAnswer: string;
 	isCorrect: boolean;
 	timeTakenMs: number;
-	hintUsed: boolean;
+	hintsUsed: number;
 }
 
 export interface SessionState {
@@ -69,4 +75,10 @@ export interface SessionState {
 	comboStreak: number;
 	score: number;
 	isFinished: boolean;
+}
+
+export interface MistakeItem {
+	prompt: string;
+	playerAnswer: string;
+	correctAnswer: string;
 }

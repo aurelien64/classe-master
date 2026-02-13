@@ -18,20 +18,21 @@
 	}
 </script>
 
-<div class="grid grid-cols-3 gap-[--spacing-numpad-gap]">
+<div class="grid w-full grid-cols-3 gap-2">
 	{#each keys as key (key)}
 		<button
 			type="button"
-			class="flex h-14 w-full items-center justify-center rounded-[--radius-sm] text-2xl font-bold transition-transform active:scale-95
+			class="flex h-14 items-center justify-center rounded-[--radius-lg] text-2xl font-bold transition-all duration-100 active:scale-95
 				{key === 'validate'
 				? validateDisabled
-					? 'bg-success/50 text-white pointer-events-none'
-					: 'bg-success text-white'
+					? 'bg-success/40 text-white pointer-events-none'
+					: 'bg-success text-white shadow-[--shadow-soft]'
 				: key === 'backspace'
 					? 'bg-bg text-text-muted'
-					: 'bg-bg-card border border-border text-text'}"
+					: 'bg-bg-card border border-border text-text shadow-[--shadow-soft]'}"
 			onclick={() => handleKey(key)}
 			disabled={key === 'validate' && validateDisabled}
+			aria-label={key === 'backspace' ? 'Effacer' : key === 'validate' ? 'Valider' : key}
 		>
 			{#if key === 'backspace'}
 				<svg

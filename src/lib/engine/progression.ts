@@ -1,6 +1,7 @@
 import { get, set } from 'idb-keyval';
 import { browser } from '$app/environment';
 import type { Topic, Grade } from './types';
+import { getStartingSubLevel } from './templates';
 
 /**
  * Progress data for a single topic.
@@ -108,14 +109,8 @@ function createDefaultTopicProgress(
 	};
 }
 
-/**
- * Get the starting sub-level for a topic.
- */
-function getTopicStartLevel(topic: Topic): number {
-	if (topic === 'subtraction') return 3;
-	if (topic === 'multiplication') return 5;
-	return 1;
-}
+// Re-export getStartingSubLevel as the local name for convenience
+const getTopicStartLevel = getStartingSubLevel;
 
 /**
  * Load progress for a player from IndexedDB.
@@ -197,11 +192,13 @@ export function recordAnswer(
 		topicProgress.recentAnswers = [];
 		reviewTriggered = true;
 	} else if (topicProgress.recentAnswers.length >= WINDOW_SIZE) {
-		// Full window evaluated but didn't advance -- count as failed attempt
+		// Full window evaluated but didn't advance -- count as one failed attempt
 		const accuracy = calculateWeightedAccuracy(topicProgress.recentAnswers.slice(-WINDOW_SIZE));
 		if (accuracy < ACCURACY_THRESHOLD) {
 			topicProgress.failedAttempts++;
 		}
+		// Reset window so we don't re-count on the next answer
+		topicProgress.recentAnswers = [];
 	}
 
 	state.topics[topic] = topicProgress;

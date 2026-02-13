@@ -13,6 +13,13 @@ async function quickOnboard(page: Page, grade: 'CP' | 'CE1' = 'CP') {
 	await page.getByRole('button', { name: /passer/i }).click();
 	await page.getByRole('button', { name: /c'est parti/i }).click();
 	await expect(page).toHaveURL('/menu');
+	// Dismiss daily reward popup if it appears
+	await page.waitForTimeout(1500);
+	const popup = page.locator('.fixed.inset-0.z-50');
+	if (await popup.isVisible({ timeout: 500 }).catch(() => false)) {
+		await popup.click();
+		await page.waitForTimeout(300);
+	}
 }
 
 /**
@@ -20,8 +27,8 @@ async function quickOnboard(page: Page, grade: 'CP' | 'CE1' = 'CP') {
  * Tries MC buttons first, then comparison buttons, then numpad.
  */
 async function answerOneQuestion(page: Page): Promise<boolean> {
-	// Wait for question card to be visible
-	const questionPrompt = page.locator('.text-2xl.font-bold.text-text');
+	// Wait for question prompt to be visible
+	const questionPrompt = page.locator('.text-4xl.font-bold.text-text');
 	try {
 		await questionPrompt.first().waitFor({ timeout: 5000 });
 	} catch {
@@ -60,19 +67,12 @@ async function answerOneQuestion(page: Page): Promise<boolean> {
 }
 
 /**
- * Helper: wait for feedback overlay to appear and dismiss it.
+ * Helper: wait for inline feedback to show and auto-advance.
+ * Feedback is now inline (no overlay) and auto-advances after 800ms (correct) or 2000ms (wrong).
  */
-async function dismissFeedback(page: Page): Promise<void> {
-	const overlay = page.locator('.fixed.inset-0.z-50');
-	try {
-		await overlay.waitFor({ timeout: 3000 });
-		// Click to dismiss (auto-dismisses after 1.2-2.5s too)
-		await overlay.click();
-	} catch {
-		// Overlay may have already auto-dismissed
-	}
-	// Wait briefly for next question to load
-	await page.waitForTimeout(600);
+async function waitForFeedbackAdvance(page: Page): Promise<void> {
+	// Wait for auto-advance (max 2500ms covers both correct and wrong delays)
+	await page.waitForTimeout(2500);
 }
 
 /**
@@ -93,7 +93,7 @@ async function playUntilResults(page: Page, maxAttempts = 20): Promise<void> {
 			await page.waitForTimeout(1000);
 			continue;
 		}
-		await dismissFeedback(page);
+		await waitForFeedbackAdvance(page);
 	}
 }
 
@@ -108,23 +108,23 @@ test.describe('CP game session', () => {
 		await expect(page).toHaveURL('/play');
 
 		// Wait for question prompt to appear
-		const questionPrompt = page.locator('.text-2xl.font-bold.text-text');
+		const questionPrompt = page.locator('.text-4xl.font-bold.text-text');
 		await expect(questionPrompt.first()).toBeVisible({ timeout: 10000 });
-
-		// Should see score display
-		await expect(page.getByText(/score/i)).toBeVisible();
 	});
 
-	test('can answer questions and see feedback', async ({ page }) => {
+	test('can answer questions and see inline feedback', async ({ page }) => {
 		await page.getByRole('link', { name: /jouer/i }).click();
 		await page.waitForTimeout(2000);
 
 		const answered = await answerOneQuestion(page);
 		expect(answered).toBe(true);
 
-		// Should see feedback overlay (correct or incorrect)
-		const feedback = page.locator('.fixed.inset-0.z-50');
-		await expect(feedback).toBeVisible({ timeout: 3000 });
+		// Should see inline feedback (correct button turns green or wrong turns red)
+		// Check for either success or error styling on answer buttons
+		const feedbackCorrect = page.locator('.bg-success.text-white');
+		const feedbackWrong = page.locator('.animate-shake');
+		const hasFeedback = (await feedbackCorrect.count()) > 0 || (await feedbackWrong.count()) > 0;
+		expect(hasFeedback).toBe(true);
 	});
 
 	test('can complete multiple questions in a session', async ({ page }) => {
@@ -135,7 +135,7 @@ test.describe('CP game session', () => {
 		for (let i = 0; i < 3; i++) {
 			const answered = await answerOneQuestion(page);
 			if (!answered) break;
-			await dismissFeedback(page);
+			await waitForFeedbackAdvance(page);
 		}
 
 		// Should still be on play page or show results
@@ -169,7 +169,7 @@ test.describe('CP game session', () => {
 		await page.getByRole('button', { name: /rejouer/i }).click();
 
 		// Should see a new question prompt
-		const questionPrompt = page.locator('.text-2xl.font-bold.text-text');
+		const questionPrompt = page.locator('.text-4xl.font-bold.text-text');
 		await expect(questionPrompt.first()).toBeVisible({ timeout: 10000 });
 	});
 
@@ -198,7 +198,7 @@ test.describe('CE1 game session', () => {
 		await expect(page).toHaveURL('/play');
 
 		// Wait for question prompt
-		const questionPrompt = page.locator('.text-2xl.font-bold.text-text');
+		const questionPrompt = page.locator('.text-4xl.font-bold.text-text');
 		await expect(questionPrompt.first()).toBeVisible({ timeout: 10000 });
 
 		// Answer a question

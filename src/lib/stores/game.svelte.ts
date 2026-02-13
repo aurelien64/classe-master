@@ -1,8 +1,16 @@
-import type { Question, AnswerResult, SessionState, Grade, Topic } from '$lib/engine/types';
+import type {
+	Question,
+	AnswerResult,
+	SessionState,
+	Grade,
+	Topic,
+	MistakeItem
+} from '$lib/engine/types';
 import { generateSessionQuestions } from '$lib/engine/generator';
 import { calculateScore, calculateCoins, SESSION_COMPLETION_BONUS } from '$lib/engine/scoring';
 import { getHints, type Hint } from '$lib/engine/hints';
 import { queueSessionForSync } from '$lib/utils/sync';
+import { recordSessionActivity } from '$lib/utils/activity';
 import {
 	loadProgress,
 	saveProgress,
@@ -11,7 +19,7 @@ import {
 	type ProgressState
 } from '$lib/engine/progression';
 
-const SESSION_DURATION = 5 * 60 * 1000; // 5 minutes
+export const SESSION_DURATION = 5 * 60 * 1000; // 5 minutes
 const GRACE_PERIOD = 15 * 1000; // 15 seconds
 
 function createGameStore() {
@@ -23,6 +31,8 @@ function createGameStore() {
 	let hintsRevealed = $state(0);
 	let progressState = $state<ProgressState | null>(null);
 	let advancements = $state<string[]>([]);
+	let graceStartTime = 0;
+	let timerInterval: ReturnType<typeof setInterval> | undefined;
 
 	async function initProgress(playerId: string, grade: Grade): Promise<void> {
 		progressState = await loadProgress(playerId, grade);
@@ -90,7 +100,7 @@ function createGameStore() {
 			correctAnswer: question.correctAnswer,
 			isCorrect,
 			timeTakenMs,
-			hintUsed: hintsRevealed > 0
+			hintsUsed: hintsRevealed
 		};
 
 		session.answers.push(result);
@@ -147,12 +157,20 @@ function createGameStore() {
 
 		// Save progression
 		if (progressState) {
-			await saveProgress(progressState);
+			await saveProgress($state.snapshot(progressState));
 		}
 
-		// Queue for sync
+		// Record daily activity + queue for sync
 		const correct = session.answers.filter((a) => a.isCorrect).length;
-		queueSessionForSync({
+		if (progressState?.playerId) {
+			await recordSessionActivity(
+				progressState.playerId,
+				session.answers.length,
+				correct,
+				session.score
+			);
+		}
+		await queueSessionForSync({
 			sessionId: session.id,
 			grade: session.grade,
 			subLevel: session.subLevel,
@@ -173,7 +191,7 @@ function createGameStore() {
 				correctAnswer: a.correctAnswer,
 				isCorrect: a.isCorrect,
 				timeTakenMs: a.timeTakenMs,
-				hintsUsed: a.hintUsed ? 1 : 0
+				hintsUsed: a.hintsUsed
 			}))
 		});
 	}
@@ -193,13 +211,23 @@ function createGameStore() {
 		return max;
 	}
 
-	function updateTimer(remaining: number): void {
-		timeRemaining = remaining;
-		if (remaining <= 0 && !inGracePeriod) {
-			inGracePeriod = true;
-			timeRemaining = GRACE_PERIOD;
-		} else if (remaining <= 0 && inGracePeriod) {
-			finishSession();
+	function tickTimer(): void {
+		if (!session || session.isFinished) return;
+
+		if (inGracePeriod) {
+			const graceElapsed = Date.now() - graceStartTime;
+			timeRemaining = Math.max(0, GRACE_PERIOD - graceElapsed);
+			if (timeRemaining <= 0) {
+				finishSession();
+			}
+		} else {
+			const elapsed = Date.now() - session.startedAt;
+			timeRemaining = Math.max(0, SESSION_DURATION - elapsed);
+			if (timeRemaining <= 0) {
+				inGracePeriod = true;
+				graceStartTime = Date.now();
+				timeRemaining = GRACE_PERIOD;
+			}
 		}
 	}
 
@@ -219,7 +247,34 @@ function createGameStore() {
 		};
 	}
 
+	function getMistakes(): MistakeItem[] {
+		if (!session) return [];
+		return session.answers
+			.filter((a) => !a.isCorrect)
+			.map((a) => {
+				const q = session!.questions.find((q) => q.id === a.questionId);
+				return {
+					prompt: q?.prompt ?? '',
+					playerAnswer: a.playerAnswer,
+					correctAnswer: a.correctAnswer
+				};
+			});
+	}
+
+	function startTimer(): void {
+		stopTimer();
+		timerInterval = setInterval(tickTimer, 1000);
+	}
+
+	function stopTimer(): void {
+		if (timerInterval) {
+			clearInterval(timerInterval);
+			timerInterval = undefined;
+		}
+	}
+
 	function reset(): void {
+		stopTimer();
 		session = null;
 		timeRemaining = SESSION_DURATION;
 		inGracePeriod = false;
@@ -261,8 +316,10 @@ function createGameStore() {
 		submitAnswer,
 		nextQuestion,
 		finishSession,
-		updateTimer,
+		startTimer,
+		stopTimer,
 		getResults,
+		getMistakes,
 		revealHint,
 		reset
 	};

@@ -16,10 +16,14 @@
 	<meta name="theme-color" content="#4F46E5" />
 </svelte:head>
 
-{#if $isLoading}
-	<div class="flex min-h-dvh items-center justify-center">
-		<p class="text-text-muted text-base animate-pulse">Chargement...</p>
-	</div>
-{:else}
-	{@render children()}
-{/if}
+<div
+	class="app-shell mx-auto flex h-dvh w-full max-w-md flex-col overflow-y-auto bg-bg shadow-none sm:my-auto sm:h-[812px] sm:max-h-[90vh] sm:rounded-[--radius-2xl] sm:shadow-xl"
+>
+	{#if $isLoading}
+		<div class="flex flex-1 items-center justify-center">
+			<p class="text-text-muted text-base animate-pulse">Chargement...</p>
+		</div>
+	{:else}
+		{@render children()}
+	{/if}
+</div>

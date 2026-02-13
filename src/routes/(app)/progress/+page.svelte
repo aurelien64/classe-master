@@ -2,33 +2,58 @@
 	import { _ } from 'svelte-i18n';
 	import { onMount } from 'svelte';
 	import { playerStore } from '$lib/stores/player.svelte';
-	import { loadProgress, getTopicProgress, type ProgressState } from '$lib/engine/progression';
-	import { getAvailableTopics } from '$lib/engine/templates';
+	import { loadProgress, getTopicProgress } from '$lib/engine/progression';
+	import { getAvailableTopics, getStartingSubLevel } from '$lib/engine/templates';
+	import { loadActivityLog, getActivityForDays } from '$lib/utils/activity';
 	import PageLayout from '$lib/components/PageLayout.svelte';
 	import TopicProgressBar from '$lib/components/TopicProgressBar.svelte';
+	import ActivityGraph from '$lib/components/ActivityGraph.svelte';
 	import Avatar from '$lib/components/Avatar.svelte';
 	import type { Topic } from '$lib/engine/types';
+	import type { DailyActivity } from '$lib/utils/activity';
 
-	let progressState = $state<ProgressState | null>(null);
+	interface TopicInfo {
+		topic: string;
+		label: string;
+		currentSubLevel: number;
+		startSubLevel: number;
+		maxSubLevel: number;
+	}
+
+	let topicInfos = $state<TopicInfo[]>([]);
+	let activityData = $state<DailyActivity[]>([]);
 	let loading = $state(true);
 
-	const topicLabels: Record<string, string> = {
-		addition: 'Addition',
-		subtraction: 'Soustraction',
-		multiplication: 'Multiplication',
-		counting: 'Comptage',
-		ordering: 'Comparaison'
+	const topicI18nKeys: Record<string, string> = {
+		addition: 'progress.addition',
+		subtraction: 'progress.subtraction',
+		multiplication: 'progress.multiplication',
+		division: 'progress.division',
+		counting: 'progress.counting',
+		ordering: 'progress.ordering'
 	};
 
 	onMount(async () => {
 		const player = playerStore.player;
 		if (player) {
-			progressState = await loadProgress(player.id, player.grade);
+			const topics = getAvailableTopics(player.grade);
+			const state = await loadProgress(player.id, player.grade);
+			topicInfos = topics.map((topic) => {
+				const tp = getTopicProgress(state, topic as Topic);
+				return {
+					topic,
+					label: topicI18nKeys[topic] ?? topic,
+					currentSubLevel: tp.currentSubLevel,
+					startSubLevel: getStartingSubLevel(topic),
+					maxSubLevel: 10
+				};
+			});
+
+			const log = await loadActivityLog(player.id);
+			activityData = getActivityForDays(log, 30);
 		}
 		loading = false;
 	});
-
-	const topics = $derived(getAvailableTopics(playerStore.player?.grade ?? 'cp'));
 </script>
 
 <svelte:head>
@@ -41,46 +66,38 @@
 			<p class="animate-pulse text-text-muted">{$_('common.loading')}</p>
 		</div>
 	{:else}
-		<div class="flex flex-col gap-6 px-4 py-6">
+		<div class="flex flex-col gap-5 px-4 py-4">
 			<!-- Player summary -->
 			<div class="flex items-center gap-4">
 				<Avatar avatarId={playerStore.player?.avatar_id ?? 1} size="md" />
-				<div>
+				<div class="flex-1">
 					<h2 class="text-lg font-bold text-text">{playerStore.player?.username ?? ''}</h2>
 					<p class="text-sm text-text-muted">
 						{$_('menu.level', { values: { level: playerStore.player?.level ?? 1 } })}
 					</p>
 				</div>
+				<div class="flex flex-col items-end gap-1">
+					<span class="text-sm font-bold text-xp-gold"
+						>&#9733; {playerStore.player?.xp ?? 0} XP</span
+					>
+					<span class="text-sm font-bold text-text">&#129689; {playerStore.player?.gems ?? 0}</span>
+				</div>
 			</div>
 
 			<!-- Topic progress bars -->
 			<div class="flex flex-col gap-3">
-				{#each topics as topic (topic)}
-					{@const tp = progressState
-						? getTopicProgress(progressState, topic as Topic)
-						: { currentSubLevel: topic === 'subtraction' ? 3 : topic === 'multiplication' ? 5 : 1 }}
+				{#each topicInfos as info (info.topic)}
 					<TopicProgressBar
-						{topic}
-						label={topicLabels[topic] ?? topic}
-						currentSubLevel={tp.currentSubLevel}
+						topic={info.topic}
+						label={$_(info.label)}
+						currentSubLevel={info.currentSubLevel}
+						startSubLevel={info.startSubLevel}
 					/>
 				{/each}
 			</div>
 
-			<!-- Overall stats -->
-			<div class="rounded-[--radius-lg] bg-surface p-4 shadow-sm">
-				<h3 class="mb-2 font-semibold text-text">{$_('progress.stats')}</h3>
-				<div class="grid grid-cols-2 gap-4">
-					<div class="text-center">
-						<p class="text-2xl font-bold text-xp-gold">{playerStore.player?.xp ?? 0}</p>
-						<p class="text-xs text-text-muted">XP</p>
-					</div>
-					<div class="text-center">
-						<p class="text-2xl font-bold text-gem-purple">{playerStore.player?.gems ?? 0}</p>
-						<p class="text-xs text-text-muted">{$_('game.coins')}</p>
-					</div>
-				</div>
-			</div>
+			<!-- Activity time graph -->
+			<ActivityGraph data={activityData} />
 		</div>
 	{/if}
 </PageLayout>

@@ -21,6 +21,8 @@ export function getHints(
 			return getSubtractionHints(operands.a, operands.b ?? 0, parseInt(correctAnswer));
 		case 'multiplication':
 			return getMultiplicationHints(operands.a, operands.b ?? 0, parseInt(correctAnswer));
+		case 'division':
+			return getDivisionHints(operands.a, operands.b ?? 1, parseInt(correctAnswer));
 		case 'counting':
 			return getCountingHints(parseInt(correctAnswer));
 		case 'ordering':
@@ -62,6 +64,21 @@ function getMultiplicationHints(a: number, b: number, result: number): Hint[] {
 			text: `${a} × ${b}, c'est ${a} ajouté ${b} fois : ${repeatedAddition}${b > 5 ? '...' : ''}.`
 		},
 		{ tier: 3, text: `${a} × ${b} = ${result}.` }
+	];
+}
+
+function getDivisionHints(quotient: number, divisor: number, answer: number): Hint[] {
+	const dividend = quotient * divisor;
+	return [
+		{ tier: 1, text: `Diviser, c'est partager en parts égales.` },
+		{
+			tier: 2,
+			text: `${dividend} partagé en ${divisor} parts égales, combien dans chaque part ?`
+		},
+		{
+			tier: 3,
+			text: `${dividend} ÷ ${divisor} = ${answer}. Car ${answer} × ${divisor} = ${dividend}.`
+		}
 	];
 }
 

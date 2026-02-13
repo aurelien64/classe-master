@@ -8,10 +8,11 @@ export interface PlayerData {
 	id: string;
 	username: string;
 	avatar_id: number;
-	grade: 'cp' | 'ce1';
+	grade: 'cp' | 'ce1' | 'ce2' | 'cm1' | 'cm2';
 	level: number;
 	xp: number;
 	gems: number;
+	unlocked_avatars: number[];
 	pin?: string;
 	created_at: string;
 }
@@ -86,14 +87,17 @@ function createPlayerStore() {
 	}
 
 	async function createPlayer(
-		data: Omit<PlayerData, 'id' | 'level' | 'xp' | 'gems' | 'created_at'>
+		data: Omit<PlayerData, 'id' | 'level' | 'xp' | 'gems' | 'unlocked_avatars' | 'created_at'>
 	): Promise<PlayerData> {
+		// IDs 1-10 are free basic avatars
+		const freeAvatars = Array.from({ length: 10 }, (_, i) => i + 1);
 		const newPlayer: PlayerData = {
 			...data,
 			id: crypto.randomUUID(),
 			level: 1,
 			xp: 0,
 			gems: 0,
+			unlocked_avatars: freeAvatars,
 			created_at: new Date().toISOString()
 		};
 
@@ -109,7 +113,7 @@ function createPlayerStore() {
 	async function updatePlayer(updates: Partial<PlayerData>): Promise<void> {
 		if (!player) return;
 		player = { ...player, ...updates };
-		await set(PLAYER_KEY_PREFIX + player.id, player);
+		await set(PLAYER_KEY_PREFIX + player.id, $state.snapshot(player));
 	}
 
 	async function logout(): Promise<void> {
@@ -117,6 +121,24 @@ function createPlayerStore() {
 		localStorage.removeItem(SESSION_KEY);
 		player = null;
 		isAuthenticated = false;
+	}
+
+	async function unlockAvatar(avatarId: number, cost: number): Promise<boolean> {
+		if (!player) return false;
+		if (player.gems < cost) return false;
+		if (player.unlocked_avatars?.includes(avatarId)) return true;
+
+		const unlocked = [...(player.unlocked_avatars ?? []), avatarId];
+		player = { ...player, gems: player.gems - cost, unlocked_avatars: unlocked };
+		await set(PLAYER_KEY_PREFIX + player.id, $state.snapshot(player));
+		return true;
+	}
+
+	function isAvatarUnlocked(avatarId: number): boolean {
+		if (!player) return false;
+		// Legacy players without unlocked_avatars: basic avatars (1-10) are free
+		if (!player.unlocked_avatars) return avatarId <= 10;
+		return player.unlocked_avatars.includes(avatarId);
 	}
 
 	async function deletePlayer(): Promise<void> {
@@ -138,6 +160,8 @@ function createPlayerStore() {
 		init,
 		createPlayer,
 		updatePlayer,
+		unlockAvatar,
+		isAvatarUnlocked,
 		logout,
 		deletePlayer
 	};
