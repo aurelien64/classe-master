@@ -26,6 +26,16 @@ function generateId(): string {
 }
 
 /**
+ * Format a number with French-style space thousand separators.
+ * Works with both numbers and numeric strings.
+ */
+export function formatNumber(n: number | string): string {
+	const s = typeof n === 'number' ? n.toString() : n;
+	if (!/^\d+$/.test(s)) return s;
+	return s.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+}
+
+/**
  * Generate a single question from a template config.
  * Retries up to 10 times to satisfy constraints.
  */
@@ -44,20 +54,20 @@ function generateFromTemplate(
 		switch (template.topic) {
 			case 'addition':
 				correctValue = a + b;
-				prompt = `${a} + ${b} = ?`;
+				prompt = `${formatNumber(a)} + ${formatNumber(b)} = ?`;
 				operation = 'addition';
 				break;
 			case 'subtraction':
 				if (a < b) continue; // A must be >= B
 				correctValue = a - b;
-				prompt = `${a} - ${b} = ?`;
+				prompt = `${formatNumber(a)} - ${formatNumber(b)} = ?`;
 				operation = 'subtraction';
 				break;
 			case 'multiplication': {
 				// Apply constraints for specific table sets
 				const effectiveB = applyMultiplicationConstraint(b, template.constraints);
 				correctValue = a * effectiveB;
-				prompt = `${a} × ${effectiveB} = ?`;
+				prompt = `${formatNumber(a)} × ${formatNumber(effectiveB)} = ?`;
 				operation = 'multiplication';
 				// Use effectiveB for fingerprint, operands, and distractors
 				b = effectiveB;
@@ -68,7 +78,7 @@ function generateFromTemplate(
 				if (b === 0) continue;
 				correctValue = a; // quotient
 				const dividend = a * b;
-				prompt = `${dividend} ÷ ${b} = ?`;
+				prompt = `${formatNumber(dividend)} ÷ ${formatNumber(b)} = ?`;
 				operation = 'division';
 				break;
 			}
@@ -193,7 +203,7 @@ function generateOrderingQuestion(
 			topic: 'ordering',
 			grade: template.grade,
 			subLevel: template.subLevel,
-			prompt: `${a} ___ ${b}`,
+			prompt: `${formatNumber(a)} ___ ${formatNumber(b)}`,
 			correctAnswer,
 			choices: ['<', '>', '='],
 			operands: { a, b },

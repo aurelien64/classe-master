@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { _ } from 'svelte-i18n';
 	import type { Question } from '$lib/engine/types';
+	import { formatNumber } from '$lib/engine/generator';
 	import NumPad from './NumPad.svelte';
 
 	interface Props {
@@ -100,7 +101,7 @@
 						{#if getChoiceState(choice) === 'correct'}
 							<span class="mr-2">&#10003;</span>
 						{/if}
-						{choice}
+						{formatNumber(choice)}
 					</button>
 				{/each}
 			</div>
@@ -109,7 +110,7 @@
 			{#if feedback && !feedback.correct}
 				<p class="mt-3 animate-fade-in text-center text-sm text-text-muted">
 					{$_('game.correctAnswerWas')}
-					<strong class="text-success">{feedback.correctAnswer}</strong>
+					<strong class="text-success">{formatNumber(feedback.correctAnswer)}</strong>
 				</p>
 			{/if}
 		{:else if question.type === 'comparison' && question.choices}
@@ -146,13 +147,13 @@
 							? 'bg-error/10 text-error border-2 border-error/30 animate-shake'
 							: 'border-2 border-border bg-bg-card text-text'}"
 				>
-					{freeInputValue || '...'}
+					{formatNumber(freeInputValue) || '...'}
 				</div>
 
 				{#if freeInputWrong}
 					<p class="animate-fade-in text-center text-sm text-text-muted">
 						{$_('game.correctAnswerWas')}
-						<strong class="text-success">{feedback?.correctAnswer}</strong>
+						<strong class="text-success">{formatNumber(feedback?.correctAnswer ?? '')}</strong>
 					</p>
 				{/if}
 

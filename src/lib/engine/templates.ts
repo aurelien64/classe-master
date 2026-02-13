@@ -598,9 +598,9 @@ const ce2Addition: TemplateConfig[] = [
 		topic: 'addition',
 		grade: 'ce2',
 		subLevel: 4,
-		operandA: { min: 1000, max: 9999 },
-		operandB: { min: 1000, max: 9999 },
-		resultRange: { min: 2000, max: 19998 },
+		operandA: { min: 1000, max: 5000 },
+		operandB: { min: 1000, max: 3000 },
+		resultRange: { min: 2000, max: 8000 },
 		distractorStrategies: ['forget_carry', 'digit_swap', 'off_by_one'],
 		questionTypes: ['free_input', 'fill_blank'],
 		questionTypeWeights: [60, 40]
@@ -648,9 +648,9 @@ const ce2Subtraction: TemplateConfig[] = [
 		topic: 'subtraction',
 		grade: 'ce2',
 		subLevel: 6,
-		operandA: { min: 1000, max: 9999 },
-		operandB: { min: 1000, max: 4999 },
-		resultRange: { min: 1, max: 8999 },
+		operandA: { min: 1000, max: 5000 },
+		operandB: { min: 1000, max: 2500 },
+		resultRange: { min: 1, max: 4000 },
 		distractorStrategies: ['forget_borrow', 'digit_swap', 'off_by_one'],
 		questionTypes: ['free_input', 'fill_blank'],
 		questionTypeWeights: [60, 40]
@@ -739,16 +739,16 @@ const ce2Division: TemplateConfig[] = [
 ];
 
 /**
- * CM1 Addition templates (4-6 digit operations).
+ * CM1 Addition templates (mental math: 3-4 digit operations).
  */
 const cm1Addition: TemplateConfig[] = [
 	{
 		topic: 'addition',
 		grade: 'cm1',
 		subLevel: 1,
-		operandA: { min: 1000, max: 9999 },
-		operandB: { min: 1000, max: 9999 },
-		resultRange: { min: 2000, max: 19998 },
+		operandA: { min: 100, max: 500 },
+		operandB: { min: 100, max: 500 },
+		resultRange: { min: 200, max: 1000 },
 		distractorStrategies: ['forget_carry', 'off_by_one', 'digit_swap'],
 		questionTypes: ['fill_blank', 'free_input'],
 		questionTypeWeights: [40, 60]
@@ -757,9 +757,9 @@ const cm1Addition: TemplateConfig[] = [
 		topic: 'addition',
 		grade: 'cm1',
 		subLevel: 2,
-		operandA: { min: 10000, max: 49999 },
-		operandB: { min: 10000, max: 49999 },
-		resultRange: { min: 20000, max: 99998 },
+		operandA: { min: 100, max: 999 },
+		operandB: { min: 100, max: 999 },
+		resultRange: { min: 200, max: 1998 },
 		distractorStrategies: ['forget_carry', 'digit_swap', 'off_by_one'],
 		questionTypes: ['fill_blank', 'free_input'],
 		questionTypeWeights: [35, 65]
@@ -768,9 +768,9 @@ const cm1Addition: TemplateConfig[] = [
 		topic: 'addition',
 		grade: 'cm1',
 		subLevel: 3,
-		operandA: { min: 10000, max: 99999 },
-		operandB: { min: 10000, max: 99999 },
-		resultRange: { min: 20000, max: 199998 },
+		operandA: { min: 1000, max: 5000 },
+		operandB: { min: 100, max: 999 },
+		resultRange: { min: 1100, max: 5999 },
 		distractorStrategies: ['forget_carry', 'digit_swap', 'off_by_one'],
 		questionTypes: ['free_input', 'fill_blank'],
 		questionTypeWeights: [60, 40]
@@ -779,9 +779,9 @@ const cm1Addition: TemplateConfig[] = [
 		topic: 'addition',
 		grade: 'cm1',
 		subLevel: 4,
-		operandA: { min: 100000, max: 999999 },
-		operandB: { min: 100000, max: 999999 },
-		resultRange: { min: 200000, max: 1999998 },
+		operandA: { min: 1000, max: 9999 },
+		operandB: { min: 1000, max: 5000 },
+		resultRange: { min: 2000, max: 14999 },
 		distractorStrategies: ['forget_carry', 'digit_swap', 'off_by_one'],
 		questionTypes: ['free_input'],
 		questionTypeWeights: [100]
@@ -789,16 +789,16 @@ const cm1Addition: TemplateConfig[] = [
 ];
 
 /**
- * CM1 Subtraction templates (4-5 digit with borrowing).
+ * CM1 Subtraction templates (mental math: 3-4 digit with borrowing).
  */
 const cm1Subtraction: TemplateConfig[] = [
 	{
 		topic: 'subtraction',
 		grade: 'cm1',
 		subLevel: 3,
-		operandA: { min: 1000, max: 9999 },
-		operandB: { min: 100, max: 999 },
-		resultRange: { min: 1, max: 9899 },
+		operandA: { min: 100, max: 999 },
+		operandB: { min: 10, max: 99 },
+		resultRange: { min: 1, max: 989 },
 		distractorStrategies: ['forget_borrow', 'off_by_one', 'digit_swap'],
 		questionTypes: ['fill_blank', 'free_input'],
 		questionTypeWeights: [40, 60]
@@ -807,9 +807,9 @@ const cm1Subtraction: TemplateConfig[] = [
 		topic: 'subtraction',
 		grade: 'cm1',
 		subLevel: 4,
-		operandA: { min: 1000, max: 9999 },
-		operandB: { min: 1000, max: 4999 },
-		resultRange: { min: 1, max: 8999 },
+		operandA: { min: 200, max: 999 },
+		operandB: { min: 100, max: 499 },
+		resultRange: { min: 1, max: 899 },
 		distractorStrategies: ['forget_borrow', 'digit_swap', 'off_by_one'],
 		questionTypes: ['fill_blank', 'free_input'],
 		questionTypeWeights: [35, 65]
@@ -818,9 +818,9 @@ const cm1Subtraction: TemplateConfig[] = [
 		topic: 'subtraction',
 		grade: 'cm1',
 		subLevel: 5,
-		operandA: { min: 10000, max: 99999 },
-		operandB: { min: 1000, max: 9999 },
-		resultRange: { min: 1, max: 98999 },
+		operandA: { min: 1000, max: 5000 },
+		operandB: { min: 100, max: 999 },
+		resultRange: { min: 1, max: 4900 },
 		distractorStrategies: ['forget_borrow', 'digit_swap', 'off_by_one'],
 		questionTypes: ['free_input', 'fill_blank'],
 		questionTypeWeights: [60, 40]
@@ -829,9 +829,9 @@ const cm1Subtraction: TemplateConfig[] = [
 		topic: 'subtraction',
 		grade: 'cm1',
 		subLevel: 6,
-		operandA: { min: 10000, max: 99999 },
-		operandB: { min: 10000, max: 49999 },
-		resultRange: { min: 1, max: 89999 },
+		operandA: { min: 1000, max: 9999 },
+		operandB: { min: 1000, max: 4999 },
+		resultRange: { min: 1, max: 8999 },
 		distractorStrategies: ['forget_borrow', 'digit_swap', 'off_by_one'],
 		questionTypes: ['free_input'],
 		questionTypeWeights: [100]
@@ -839,7 +839,7 @@ const cm1Subtraction: TemplateConfig[] = [
 ];
 
 /**
- * CM1 Multiplication templates (multi-digit).
+ * CM1 Multiplication templates (mental math: up to 2-digit × 2-digit).
  */
 const cm1Multiplication: TemplateConfig[] = [
 	{
@@ -857,9 +857,9 @@ const cm1Multiplication: TemplateConfig[] = [
 		topic: 'multiplication',
 		grade: 'cm1',
 		subLevel: 6,
-		operandA: { min: 10, max: 50 },
-		operandB: { min: 10, max: 50 },
-		resultRange: { min: 100, max: 2500 },
+		operandA: { min: 10, max: 30 },
+		operandB: { min: 10, max: 25 },
+		resultRange: { min: 100, max: 750 },
 		distractorStrategies: ['off_by_one', 'forget_carry', 'random_nearby'],
 		questionTypes: ['fill_blank', 'free_input'],
 		questionTypeWeights: [40, 60]
@@ -868,9 +868,9 @@ const cm1Multiplication: TemplateConfig[] = [
 		topic: 'multiplication',
 		grade: 'cm1',
 		subLevel: 7,
-		operandA: { min: 100, max: 999 },
+		operandA: { min: 100, max: 500 },
 		operandB: { min: 2, max: 9 },
-		resultRange: { min: 200, max: 8991 },
+		resultRange: { min: 200, max: 4500 },
 		distractorStrategies: ['forget_carry', 'off_by_one', 'random_nearby'],
 		questionTypes: ['fill_blank', 'free_input'],
 		questionTypeWeights: [35, 65]
@@ -879,9 +879,9 @@ const cm1Multiplication: TemplateConfig[] = [
 		topic: 'multiplication',
 		grade: 'cm1',
 		subLevel: 8,
-		operandA: { min: 10, max: 99 },
-		operandB: { min: 10, max: 99 },
-		resultRange: { min: 100, max: 9801 },
+		operandA: { min: 10, max: 50 },
+		operandB: { min: 10, max: 50 },
+		resultRange: { min: 100, max: 2500 },
 		distractorStrategies: ['forget_carry', 'off_by_one', 'digit_swap'],
 		questionTypes: ['free_input'],
 		questionTypeWeights: [100]
@@ -940,16 +940,16 @@ const cm1Division: TemplateConfig[] = [
 ];
 
 /**
- * CM2 Addition templates (5-7 digit operations).
+ * CM2 Addition templates (mental math: 3-5 digit operations).
  */
 const cm2Addition: TemplateConfig[] = [
 	{
 		topic: 'addition',
 		grade: 'cm2',
 		subLevel: 1,
-		operandA: { min: 10000, max: 99999 },
-		operandB: { min: 10000, max: 99999 },
-		resultRange: { min: 20000, max: 199998 },
+		operandA: { min: 100, max: 999 },
+		operandB: { min: 100, max: 999 },
+		resultRange: { min: 200, max: 1998 },
 		distractorStrategies: ['forget_carry', 'digit_swap', 'off_by_one'],
 		questionTypes: ['fill_blank', 'free_input'],
 		questionTypeWeights: [35, 65]
@@ -958,9 +958,9 @@ const cm2Addition: TemplateConfig[] = [
 		topic: 'addition',
 		grade: 'cm2',
 		subLevel: 2,
-		operandA: { min: 100000, max: 999999 },
-		operandB: { min: 100000, max: 999999 },
-		resultRange: { min: 200000, max: 1999998 },
+		operandA: { min: 1000, max: 5000 },
+		operandB: { min: 100, max: 999 },
+		resultRange: { min: 1100, max: 5999 },
 		distractorStrategies: ['forget_carry', 'digit_swap', 'off_by_one'],
 		questionTypes: ['free_input', 'fill_blank'],
 		questionTypeWeights: [60, 40]
@@ -969,9 +969,9 @@ const cm2Addition: TemplateConfig[] = [
 		topic: 'addition',
 		grade: 'cm2',
 		subLevel: 3,
-		operandA: { min: 100000, max: 999999 },
-		operandB: { min: 100000, max: 999999 },
-		resultRange: { min: 200000, max: 1999998 },
+		operandA: { min: 1000, max: 9999 },
+		operandB: { min: 1000, max: 9999 },
+		resultRange: { min: 2000, max: 19998 },
 		distractorStrategies: ['forget_carry', 'digit_swap', 'off_by_one'],
 		questionTypes: ['free_input'],
 		questionTypeWeights: [100]
@@ -980,9 +980,9 @@ const cm2Addition: TemplateConfig[] = [
 		topic: 'addition',
 		grade: 'cm2',
 		subLevel: 4,
-		operandA: { min: 1000000, max: 9999999 },
-		operandB: { min: 1000000, max: 9999999 },
-		resultRange: { min: 2000000, max: 19999998 },
+		operandA: { min: 10000, max: 50000 },
+		operandB: { min: 1000, max: 9999 },
+		resultRange: { min: 11000, max: 59999 },
 		distractorStrategies: ['forget_carry', 'digit_swap', 'off_by_one'],
 		questionTypes: ['free_input'],
 		questionTypeWeights: [100]
@@ -990,16 +990,16 @@ const cm2Addition: TemplateConfig[] = [
 ];
 
 /**
- * CM2 Subtraction templates (5-7 digit with borrowing).
+ * CM2 Subtraction templates (mental math: 3-5 digit with borrowing).
  */
 const cm2Subtraction: TemplateConfig[] = [
 	{
 		topic: 'subtraction',
 		grade: 'cm2',
 		subLevel: 3,
-		operandA: { min: 10000, max: 99999 },
-		operandB: { min: 10000, max: 49999 },
-		resultRange: { min: 1, max: 89999 },
+		operandA: { min: 500, max: 999 },
+		operandB: { min: 100, max: 499 },
+		resultRange: { min: 1, max: 899 },
 		distractorStrategies: ['forget_borrow', 'digit_swap', 'off_by_one'],
 		questionTypes: ['fill_blank', 'free_input'],
 		questionTypeWeights: [35, 65]
@@ -1008,9 +1008,9 @@ const cm2Subtraction: TemplateConfig[] = [
 		topic: 'subtraction',
 		grade: 'cm2',
 		subLevel: 4,
-		operandA: { min: 100000, max: 999999 },
-		operandB: { min: 10000, max: 99999 },
-		resultRange: { min: 1, max: 989999 },
+		operandA: { min: 1000, max: 9999 },
+		operandB: { min: 100, max: 999 },
+		resultRange: { min: 1, max: 9899 },
 		distractorStrategies: ['forget_borrow', 'digit_swap', 'off_by_one'],
 		questionTypes: ['free_input', 'fill_blank'],
 		questionTypeWeights: [60, 40]
@@ -1019,9 +1019,9 @@ const cm2Subtraction: TemplateConfig[] = [
 		topic: 'subtraction',
 		grade: 'cm2',
 		subLevel: 5,
-		operandA: { min: 100000, max: 999999 },
-		operandB: { min: 100000, max: 499999 },
-		resultRange: { min: 1, max: 899999 },
+		operandA: { min: 1000, max: 9999 },
+		operandB: { min: 1000, max: 4999 },
+		resultRange: { min: 1, max: 8999 },
 		distractorStrategies: ['forget_borrow', 'digit_swap', 'off_by_one'],
 		questionTypes: ['free_input'],
 		questionTypeWeights: [100]
@@ -1030,9 +1030,9 @@ const cm2Subtraction: TemplateConfig[] = [
 		topic: 'subtraction',
 		grade: 'cm2',
 		subLevel: 6,
-		operandA: { min: 1000000, max: 9999999 },
-		operandB: { min: 1000000, max: 4999999 },
-		resultRange: { min: 1, max: 8999999 },
+		operandA: { min: 10000, max: 50000 },
+		operandB: { min: 1000, max: 9999 },
+		resultRange: { min: 1, max: 49000 },
 		distractorStrategies: ['forget_borrow', 'digit_swap', 'off_by_one'],
 		questionTypes: ['free_input'],
 		questionTypeWeights: [100]
@@ -1040,16 +1040,16 @@ const cm2Subtraction: TemplateConfig[] = [
 ];
 
 /**
- * CM2 Multiplication templates (large multi-digit).
+ * CM2 Multiplication templates (mental math: up to 2-digit × 2-digit).
  */
 const cm2Multiplication: TemplateConfig[] = [
 	{
 		topic: 'multiplication',
 		grade: 'cm2',
 		subLevel: 5,
-		operandA: { min: 100, max: 999 },
-		operandB: { min: 10, max: 99 },
-		resultRange: { min: 1000, max: 99000 },
+		operandA: { min: 10, max: 99 },
+		operandB: { min: 2, max: 9 },
+		resultRange: { min: 20, max: 891 },
 		distractorStrategies: ['forget_carry', 'off_by_one', 'random_nearby'],
 		questionTypes: ['fill_blank', 'free_input'],
 		questionTypeWeights: [35, 65]
@@ -1058,9 +1058,9 @@ const cm2Multiplication: TemplateConfig[] = [
 		topic: 'multiplication',
 		grade: 'cm2',
 		subLevel: 6,
-		operandA: { min: 1000, max: 9999 },
+		operandA: { min: 100, max: 999 },
 		operandB: { min: 2, max: 9 },
-		resultRange: { min: 2000, max: 89991 },
+		resultRange: { min: 200, max: 8991 },
 		distractorStrategies: ['forget_carry', 'off_by_one', 'random_nearby'],
 		questionTypes: ['fill_blank', 'free_input'],
 		questionTypeWeights: [35, 65]
@@ -1069,9 +1069,9 @@ const cm2Multiplication: TemplateConfig[] = [
 		topic: 'multiplication',
 		grade: 'cm2',
 		subLevel: 7,
-		operandA: { min: 100, max: 999 },
-		operandB: { min: 10, max: 99 },
-		resultRange: { min: 1000, max: 99000 },
+		operandA: { min: 10, max: 99 },
+		operandB: { min: 10, max: 25 },
+		resultRange: { min: 100, max: 2475 },
 		distractorStrategies: ['forget_carry', 'digit_swap', 'off_by_one'],
 		questionTypes: ['free_input'],
 		questionTypeWeights: [100]
@@ -1080,9 +1080,9 @@ const cm2Multiplication: TemplateConfig[] = [
 		topic: 'multiplication',
 		grade: 'cm2',
 		subLevel: 8,
-		operandA: { min: 100, max: 999 },
-		operandB: { min: 100, max: 999 },
-		resultRange: { min: 10000, max: 998001 },
+		operandA: { min: 20, max: 99 },
+		operandB: { min: 10, max: 50 },
+		resultRange: { min: 200, max: 4950 },
 		distractorStrategies: ['forget_carry', 'digit_swap', 'off_by_one'],
 		questionTypes: ['free_input'],
 		questionTypeWeights: [100]
@@ -1131,9 +1131,9 @@ const cm2Division: TemplateConfig[] = [
 		topic: 'division',
 		grade: 'cm2',
 		subLevel: 10,
-		operandA: { min: 100, max: 999 },
-		operandB: { min: 10, max: 99 },
-		resultRange: { min: 10, max: 99 },
+		operandA: { min: 20, max: 99 },
+		operandB: { min: 10, max: 50 },
+		resultRange: { min: 2, max: 99 },
 		distractorStrategies: ['off_by_one', 'random_nearby', 'digit_swap'],
 		questionTypes: ['free_input'],
 		questionTypeWeights: [100]
