@@ -16,7 +16,8 @@
 		"leaderboard": "Classement",
 		"welcome": "Bienvenue, {username} !",
 		"level": "Niveau {level}",
-		"xp": "Expérience"
+		"xp": "Expérience",
+		"gradeLevel": "{grade} · Niveau {level}"
 	},
 	"game": {
 		"validate": "Valider",
@@ -89,7 +90,9 @@
 		"accuracy": "correct",
 		"totalQuestions": "Questions",
 		"correctAnswers": "Correctes",
-		"noActivity": "Joue pour voir tes statistiques ici !"
+		"noActivity": "Joue pour voir tes statistiques ici !",
+		"overallProgress": "Progression {grade}",
+		"overallPercent": "{percent}% terminé"
 	},
 	"settings": {
 		"changeAvatar": "Changer d'avatar",

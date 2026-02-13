@@ -76,10 +76,31 @@
 		<h1 class="text-2xl font-bold text-text">
 			{$_('menu.welcome', { values: { username: playerStore.player?.username ?? '' } })}
 		</h1>
+		<!-- Grade + Level -->
+		<p class="text-base font-semibold text-primary">
+			{$_('menu.gradeLevel', {
+				values: {
+					grade: (playerStore.player?.grade ?? 'cp').toUpperCase(),
+					level: playerStore.player?.level ?? 1
+				}
+			})}
+		</p>
+	</div>
+
+	<!-- XP progress (compact, right below grade+level) -->
+	<div class="mt-3 w-full max-w-sm">
+		<div class="flex items-center gap-3">
+			<div class="flex-1">
+				<ProgressBar value={playerStore.player?.xp ?? 0} max={100} color="xp" />
+			</div>
+			<span class="shrink-0 text-sm font-bold text-text-muted">
+				{playerStore.player?.xp ?? 0} / 100 XP
+			</span>
+		</div>
 	</div>
 
 	<!-- Motivational quote -->
-	<p class="animate-fade-in mt-2 max-w-xs text-center text-sm italic text-text-muted">
+	<p class="animate-fade-in mt-3 max-w-xs text-center text-sm italic text-text-muted">
 		&ldquo;{quoteText}&rdquo;
 	</p>
 
@@ -95,25 +116,10 @@
 		</div>
 	{/if}
 
-	<!-- XP progress -->
-	<div class="mt-5 w-full max-w-sm">
-		<div class="mb-1.5 flex justify-between text-sm font-medium text-text-muted">
-			<span>{$_('menu.xp')}</span>
-			<span>{playerStore.player?.xp ?? 0} / 100</span>
-		</div>
-		<ProgressBar value={playerStore.player?.xp ?? 0} max={100} color="xp" />
-	</div>
-
-	<!-- Stats row -->
-	<div class="mt-4 flex gap-8">
-		<div class="flex items-center gap-2">
-			<span class="text-xl text-xp-gold">&#9733;</span>
-			<span class="text-lg font-bold text-text">{playerStore.player?.xp ?? 0} XP</span>
-		</div>
-		<div class="flex items-center gap-2">
-			<span class="text-xl">&#129689;</span>
-			<span class="text-lg font-bold text-text">{playerStore.player?.gems ?? 0}</span>
-		</div>
+	<!-- Gems -->
+	<div class="mt-4 flex items-center gap-2">
+		<span class="text-xl">&#129689;</span>
+		<span class="text-lg font-bold text-text">{playerStore.player?.gems ?? 0}</span>
 	</div>
 
 	<!-- Main actions -->

@@ -16,7 +16,8 @@
 		"leaderboard": "Leaderboard",
 		"welcome": "Welcome, {username}!",
 		"level": "Level {level}",
-		"xp": "Experience"
+		"xp": "Experience",
+		"gradeLevel": "{grade} · Level {level}"
 	},
 	"game": {
 		"validate": "Validate",
@@ -89,7 +90,9 @@
 		"accuracy": "correct",
 		"totalQuestions": "Questions",
 		"correctAnswers": "Correct",
-		"noActivity": "Play to see your stats here!"
+		"noActivity": "Play to see your stats here!",
+		"overallProgress": "{grade} Progress",
+		"overallPercent": "{percent}% complete"
 	},
 	"settings": {
 		"changeAvatar": "Change avatar",

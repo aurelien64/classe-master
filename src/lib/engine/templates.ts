@@ -1193,3 +1193,9 @@ export function getStartingSubLevel(topic: string): number {
 	if (topic === 'division') return 7;
 	return 1;
 }
+
+export function getMaxSubLevelForTopic(topic: string, grade: string): number {
+	const templates = getTemplatesForTopic(topic, grade);
+	if (templates.length === 0) return getStartingSubLevel(topic);
+	return Math.max(...templates.map((t) => t.subLevel));
+}

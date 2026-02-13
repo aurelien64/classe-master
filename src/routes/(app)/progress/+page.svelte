@@ -3,10 +3,11 @@
 	import { onMount } from 'svelte';
 	import { playerStore } from '$lib/stores/player.svelte';
 	import { loadProgress, getTopicProgress } from '$lib/engine/progression';
-	import { getAvailableTopics, getStartingSubLevel } from '$lib/engine/templates';
+	import { getAvailableTopics, getStartingSubLevel, getMaxSubLevelForTopic } from '$lib/engine/templates';
 	import { loadActivityLog, getActivityForDays } from '$lib/utils/activity';
 	import PageLayout from '$lib/components/PageLayout.svelte';
 	import TopicProgressBar from '$lib/components/TopicProgressBar.svelte';
+	import ProgressBar from '$lib/components/ProgressBar.svelte';
 	import ActivityGraph from '$lib/components/ActivityGraph.svelte';
 	import Avatar from '$lib/components/Avatar.svelte';
 	import type { Topic } from '$lib/engine/types';
@@ -22,6 +23,7 @@
 
 	let topicInfos = $state<TopicInfo[]>([]);
 	let activityData = $state<DailyActivity[]>([]);
+	let overallPercent = $state(0);
 	let loading = $state(true);
 
 	const topicI18nKeys: Record<string, string> = {
@@ -45,9 +47,19 @@
 					label: topicI18nKeys[topic] ?? topic,
 					currentSubLevel: tp.currentSubLevel,
 					startSubLevel: getStartingSubLevel(topic),
-					maxSubLevel: 10
+					maxSubLevel: getMaxSubLevelForTopic(topic, player.grade)
 				};
 			});
+
+			// Compute overall grade completion
+			if (topicInfos.length > 0) {
+				const sum = topicInfos.reduce((acc, info) => {
+					const total = info.maxSubLevel - info.startSubLevel + 1;
+					const done = Math.max(0, info.currentSubLevel - info.startSubLevel);
+					return acc + done / total;
+				}, 0);
+				overallPercent = Math.round((sum / topicInfos.length) * 100);
+			}
 
 			const log = await loadActivityLog(player.id);
 			activityData = getActivityForDays(log, 30);
@@ -84,6 +96,21 @@
 				</div>
 			</div>
 
+			<!-- Overall grade progress -->
+			<div class="rounded-[--radius-xl] bg-surface p-4 shadow-[--shadow-card]">
+				<div class="mb-2 flex items-baseline justify-between">
+					<h3 class="text-base font-bold text-text">
+						{$_('progress.overallProgress', {
+							values: { grade: (playerStore.player?.grade ?? 'cp').toUpperCase() }
+						})}
+					</h3>
+					<span class="text-sm font-bold text-primary">
+						{$_('progress.overallPercent', { values: { percent: overallPercent } })}
+					</span>
+				</div>
+				<ProgressBar value={overallPercent} max={100} color="primary" />
+			</div>
+
 			<!-- Topic progress bars -->
 			<div class="flex flex-col gap-3">
 				{#each topicInfos as info (info.topic)}
@@ -92,6 +119,7 @@
 						label={$_(info.label)}
 						currentSubLevel={info.currentSubLevel}
 						startSubLevel={info.startSubLevel}
+						maxSubLevel={info.maxSubLevel}
 					/>
 				{/each}
 			</div>
